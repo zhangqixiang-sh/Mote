@@ -1,0 +1,17 @@
+# Mote 构建配置示例
+app:
+  name: Mote
+  min-macOS: "14.0"
+  targets:
+    - Mote
+  options:
+    light-weight: true
+    themes:
+      - light
+      - dark
+      - auto   # 跟随系统
+languages: &langs
+  swift: builtin
+  python: builtin
+  json: custom
+anchor-ref: *langs

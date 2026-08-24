@@ -10,7 +10,7 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeName</key>
-			<string>Plain Text Document</string>
+			<string>Mote Document</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
@@ -18,75 +18,41 @@
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>public.plain-text</string>
+				<string>public.text</string>
 				<string>public.source-code</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeName</key>
-			<string>JSON Document</string>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>LSHandlerRank</key>
-			<string>Alternate</string>
-			<key>LSItemContentTypes</key>
-			<array>
 				<string>public.json</string>
+				<string>public.swift-source</string>
+				<string>public.c-source</string>
+				<string>public.c-header</string>
+				<string>public.c-plus-plus-source</string>
+				<string>public.c-plus-plus-header</string>
+				<string>public.objective-c-source</string>
+				<string>public.objective-c-plus-plus-source</string>
+				<string>public.csharp-source</string>
+				<string>public.go-source</string>
+				<string>public.rust-source</string>
+				<string>public.python-script</string>
+				<string>public.javascript-source</string>
+				<string>public.ruby-script</string>
+				<string>public.php-script</string>
+				<string>public.shell-script</string>
+				<string>public.sql</string>
+				<string>public.html</string>
+				<string>public.xml</string>
+				<string>public.css</string>
+				<string>public.plist</string>
+				<string>public.composite-content</string>
+				<string>com.mote.yaml</string>
+				<string>com.mote.markdown</string>
+				<string>com.mote.toml</string>
+				<string>com.mote.typescript</string>
+				<string>com.mote.java</string>
+				<string>com.mote.cpp</string>
+				<string>com.mote.objc</string>
+				<string>com.mote.csharp</string>
 			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>yaml</string>
-				<string>yml</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>YAML Document</string>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>LSHandlerRank</key>
-			<string>Alternate</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>md</string>
-				<string>markdown</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>Markdown Document</string>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>LSHandlerRank</key>
-			<string>Alternate</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>swift</string>
-				<string>py</string>
-				<string>js</string>
-				<string>ts</string>
-				<string>go</string>
-				<string>rs</string>
-				<string>c</string>
-				<string>h</string>
-				<string>cpp</string>
-				<string>hpp</string>
-				<string>java</string>
-				<string>sh</string>
-				<string>sql</string>
-				<string>html</string>
-				<string>css</string>
-				<string>xml</string>
-				<string>json</string>
-				<string>plist</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>Source Code Document</string>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>LSHandlerRank</key>
-			<string>Alternate</string>
+			<key>NSDocumentClass</key>
+			<string>MoteDocument</string>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
@@ -103,9 +69,172 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.developer-tools</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>14.0</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+				<string>public.text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>YAML Document</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.mote.yaml</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>yaml</string>
+					<string>yml</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+				<string>public.text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Markdown Document</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.mote.markdown</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>md</string>
+					<string>markdown</string>
+					<string>mdown</string>
+					<string>mkd</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+				<string>public.text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>TOML Document</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.mote.toml</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>toml</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>TypeScript Source</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.mote.typescript</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>ts</string>
+					<string>tsx</string>
+					<string>mts</string>
+					<string>cts</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Java Source</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.mote.java</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>java</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.c-plus-plus-source</string>
+				<string>public.source-code</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>C++ Source</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.mote.cpp</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>cpp</string>
+					<string>cc</string>
+					<string>cxx</string>
+					<string>c++</string>
+					<string>hpp</string>
+					<string>hh</string>
+					<string>hxx</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Objective-C Source</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.mote.objc</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>m</string>
+					<string>mm</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.csharp-source</string>
+				<string>public.source-code</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>C# Source</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.mote.csharp</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>cs</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
 </dict>
 </plist>

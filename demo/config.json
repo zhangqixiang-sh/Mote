@@ -1,0 +1,17 @@
+{
+  "name": "Mote",
+  "version": "0.2.0",
+  "platform": "macOS 14.0",
+  "lightweight": true,
+  "features": {
+    "syntaxHighlighting": 24,
+    "themes": ["light", "dark"],
+    "preview": ["markdown", "svg"]
+  },
+  "dependencies": {
+    "Sourceful": "0.4.0"
+  },
+  "targets": null,
+  "published": false,
+  "rating": 4.5
+}

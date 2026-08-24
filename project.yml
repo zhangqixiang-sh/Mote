@@ -27,24 +27,85 @@ targets:
         CFBundleName: Mote
         LSMinimumSystemVersion: "14.0"
         NSPrincipalClass: NSApplication
+        # 自定义 UTI(没有公共 UTI 的扩展名)
+        UTExportedTypeDeclarations:
+          - UTTypeIdentifier: com.mote.yaml
+            UTTypeDescription: YAML Document
+            UTTypeConformsTo: [public.plain-text, public.text]
+            UTTypeTagSpecification:
+              public.filename-extension: [yaml, yml]
+          - UTTypeIdentifier: com.mote.markdown
+            UTTypeDescription: Markdown Document
+            UTTypeConformsTo: [public.plain-text, public.text]
+            UTTypeTagSpecification:
+              public.filename-extension: [md, markdown, mdown, mkd]
+          - UTTypeIdentifier: com.mote.toml
+            UTTypeDescription: TOML Document
+            UTTypeConformsTo: [public.plain-text, public.text]
+            UTTypeTagSpecification:
+              public.filename-extension: [toml]
+          - UTTypeIdentifier: com.mote.typescript
+            UTTypeDescription: TypeScript Source
+            UTTypeConformsTo: [public.source-code, public.text]
+            UTTypeTagSpecification:
+              public.filename-extension: [ts, tsx, mts, cts]
+          - UTTypeIdentifier: com.mote.java
+            UTTypeDescription: Java Source
+            UTTypeConformsTo: [public.source-code, public.text]
+            UTTypeTagSpecification:
+              public.filename-extension: [java]
+          - UTTypeIdentifier: com.mote.cpp
+            UTTypeDescription: C++ Source
+            UTTypeConformsTo: [public.c-plus-plus-source, public.source-code]
+            UTTypeTagSpecification:
+              public.filename-extension: [cpp, cc, cxx, c++, hpp, hh, hxx]
+          - UTTypeIdentifier: com.mote.objc
+            UTTypeDescription: Objective-C Source
+            UTTypeConformsTo: [public.source-code, public.text]
+            UTTypeTagSpecification:
+              public.filename-extension: [m, mm]
+          - UTTypeIdentifier: com.mote.csharp
+            UTTypeDescription: C# Source
+            UTTypeConformsTo: [public.csharp-source, public.source-code]
+            UTTypeTagSpecification:
+              public.filename-extension: [cs]
         CFBundleDocumentTypes:
-          - CFBundleTypeName: Plain Text Document
+          - CFBundleTypeName: Mote Document
             CFBundleTypeRole: Editor
             LSHandlerRank: Alternate
-            LSItemContentTypes: [public.plain-text, public.source-code]
-          - CFBundleTypeName: JSON Document
-            CFBundleTypeRole: Editor
-            LSHandlerRank: Alternate
-            LSItemContentTypes: [public.json]
-          - CFBundleTypeName: YAML Document
-            CFBundleTypeRole: Editor
-            LSHandlerRank: Alternate
-            CFBundleTypeExtensions: [yaml, yml]
-          - CFBundleTypeName: Markdown Document
-            CFBundleTypeRole: Editor
-            LSHandlerRank: Alternate
-            CFBundleTypeExtensions: [md, markdown]
-          - CFBundleTypeName: Source Code Document
-            CFBundleTypeRole: Editor
-            LSHandlerRank: Alternate
-            CFBundleTypeExtensions: [swift, py, js, ts, go, rs, c, h, cpp, hpp, java, sh, sql, html, css, xml, json, plist]
+            NSDocumentClass: MoteDocument
+            LSItemContentTypes:
+              - public.plain-text
+              - public.text
+              - public.source-code
+              - public.json
+              - public.swift-source
+              - public.c-source
+              - public.c-header
+              - public.c-plus-plus-source
+              - public.c-plus-plus-header
+              - public.objective-c-source
+              - public.objective-c-plus-plus-source
+              - public.csharp-source
+              - public.go-source
+              - public.rust-source
+              - public.python-script
+              - public.javascript-source
+              - public.ruby-script
+              - public.php-script
+              - public.shell-script
+              - public.sql
+              - public.html
+              - public.xml
+              - public.css
+              - public.plist
+              - public.composite-content
+              - com.mote.yaml
+              - com.mote.markdown
+              - com.mote.toml
+              - com.mote.typescript
+              - com.mote.java
+              - com.mote.cpp
+              - com.mote.objc
+              - com.mote.csharp
+        LSApplicationCategoryType: public.app-category.developer-tools
