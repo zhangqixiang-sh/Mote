@@ -1,0 +1,50 @@
+name: Mote
+options:
+  bundleIdPrefix: com.mote
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    CODE_SIGN_IDENTITY: "-"
+targets:
+  Mote:
+    type: application
+    platform: macOS
+    sources:
+      - path: Mote
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mote.app
+        PRODUCT_NAME: Mote
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+    info:
+      path: Mote/Info.plist
+      properties:
+        CFBundleDisplayName: Mote
+        CFBundleName: Mote
+        LSMinimumSystemVersion: "14.0"
+        NSPrincipalClass: NSApplication
+        CFBundleDocumentTypes:
+          - CFBundleTypeName: Plain Text Document
+            CFBundleTypeRole: Editor
+            LSHandlerRank: Alternate
+            LSItemContentTypes: [public.plain-text, public.source-code]
+          - CFBundleTypeName: JSON Document
+            CFBundleTypeRole: Editor
+            LSHandlerRank: Alternate
+            LSItemContentTypes: [public.json]
+          - CFBundleTypeName: YAML Document
+            CFBundleTypeRole: Editor
+            LSHandlerRank: Alternate
+            CFBundleTypeExtensions: [yaml, yml]
+          - CFBundleTypeName: Markdown Document
+            CFBundleTypeRole: Editor
+            LSHandlerRank: Alternate
+            CFBundleTypeExtensions: [md, markdown]
+          - CFBundleTypeName: Source Code Document
+            CFBundleTypeRole: Editor
+            LSHandlerRank: Alternate
+            CFBundleTypeExtensions: [swift, py, js, ts, go, rs, c, h, cpp, hpp, java, sh, sql, html, css, xml, json, plist]

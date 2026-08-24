@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# Xcode 派生数据与用户状态
+DerivedData/
+build/
+xcuserdata/
+*.xcuserstate
+
+# SwiftPM
+.swiftpm/
+
+# 本地工作数据(项目记忆等,不入库)
+.workbuddy/
