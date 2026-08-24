@@ -27,6 +27,16 @@ final class MoteDocument: NSDocument {
         return resolved
     }
 
+    /// 是否 Markdown 文档(按扩展名),决定是否提供右侧分栏预览(M3)
+    var isMarkdown: Bool {
+        switch fileURL?.pathExtension.lowercased() {
+        case "md", "markdown", "mdown", "mkd":
+            return true
+        default:
+            return false
+        }
+    }
+
     // MARK: - 文档类型
 
     /// 告诉 NSDocumentController 本类可以读取/写入所有注册过的 UTI。
@@ -80,7 +90,8 @@ final class MoteDocument: NSDocument {
         let rootView = EditorView(document: self)
         let hostingController = NSHostingController(rootView: rootView)
         let window = NSWindow(contentViewController: hostingController)
-        window.setContentSize(NSSize(width: 880, height: 640))
+        // Markdown 文档默认带右侧预览分栏,初始窗口加宽
+        window.setContentSize(NSSize(width: isMarkdown ? 1120 : 880, height: 640))
         window.title = displayName
         // 标题栏透明沉浸式:
         // - .fullSizeContentView + titlebarAppearsTransparent:内容视图

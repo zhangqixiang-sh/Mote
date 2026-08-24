@@ -14,6 +14,7 @@
 		178C5D80DE7F40E8F7BC03C6 /* SourceCodeTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E27577647E346EB84D91CEC /* SourceCodeTheme.swift */; };
 		19D268DF83D0B4EBE6D76DAF /* SwiftLexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A889EB9B08DA5A63DEEDFA6 /* SwiftLexer.swift */; };
 		19D9AA35D7DC9512191BA103 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B1CDF4A37C758651AA670D /* AppDelegate.swift */; };
+		1CDC69170B009061A95D40FE /* MarkdownRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F25E066445A974ED04DE5BC /* MarkdownRenderer.swift */; };
 		1EDBCB6A41579E4EA62439E7 /* Lexers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A30C34BF891097F3E9656E5 /* Lexers.swift */; };
 		2330E5699BE6EEA096725849 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBAAEC019A16EB1B32850919 /* Token.swift */; };
 		2F591BF18777EBA55BEAD389 /* InnerTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C309527C6DF22BB40B7821C4 /* InnerTextView.swift */; };
@@ -26,6 +27,7 @@
 		4BD7FC9BADB710A2561B1E9C /* SyntaxColorTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B8E41E6D12D6F0E9ADFDA3 /* SyntaxColorTheme.swift */; };
 		50A3CFBA7329FC5A353C417C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = AE3ED94B174381709F360210 /* README.md */; };
 		57D768F28B45BC79304953ED /* String+Range.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6123B3AA63B7BA930B1E663 /* String+Range.swift */; };
+		58845C93B69E967CB0EAD0B9 /* MarkdownPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2489FE0E36D5BC3A9C2EDDD7 /* MarkdownPreviewView.swift */; };
 		612B02100DE8A67EBC02270E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA900F85DDEB5073A2267594 /* Assets.xcassets */; };
 		67F86667ECC43396ED2F85F7 /* MoteDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE549EA57BC5428B0CD5BBDC /* MoteDocument.swift */; };
 		69E43EA7E781821C3B2A302C /* Paragraphs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1839AB4761BF054396CD7D72 /* Paragraphs.swift */; };
@@ -49,8 +51,10 @@
 		0A8C2FD2652023A761B01642 /* OCamlLexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCamlLexer.swift; sourceTree = "<group>"; };
 		0D25DBD2D8398F61E3C8D0F8 /* SyntaxTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxTextView.swift; sourceTree = "<group>"; };
 		1839AB4761BF054396CD7D72 /* Paragraphs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Paragraphs.swift; sourceTree = "<group>"; };
+		1F25E066445A974ED04DE5BC /* MarkdownRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRenderer.swift; sourceTree = "<group>"; };
 		215178A667ACE2D8A78FD01A /* LICENSE */ = {isa = PBXFileReference; path = LICENSE; sourceTree = "<group>"; };
 		2414F678524EAE050D372964 /* Types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Types.swift; sourceTree = "<group>"; };
+		2489FE0E36D5BC3A9C2EDDD7 /* MarkdownPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownPreviewView.swift; sourceTree = "<group>"; };
 		34810BBF0DFA28917807B30B /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
 		3CB3E329140217DB72056A57 /* SyntaxTextView+TextViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SyntaxTextView+TextViewDelegate.swift"; sourceTree = "<group>"; };
 		4A34FDAD20B0D70C79BEBF57 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
@@ -160,6 +164,8 @@
 			isa = PBXGroup;
 			children = (
 				F71359FA2A15B1350F5666DF /* .gitkeep */,
+				2489FE0E36D5BC3A9C2EDDD7 /* MarkdownPreviewView.swift */,
+				1F25E066445A974ED04DE5BC /* MarkdownRenderer.swift */,
 			);
 			path = Preview;
 			sourceTree = "<group>";
@@ -332,6 +338,8 @@
 				B5F787EF6373DCB3D73E4C43 /* Lexer.swift in Sources */,
 				1EDBCB6A41579E4EA62439E7 /* Lexers.swift in Sources */,
 				99455F32270546F3846D6808 /* LineNumberLayoutManager.swift in Sources */,
+				58845C93B69E967CB0EAD0B9 /* MarkdownPreviewView.swift in Sources */,
+				1CDC69170B009061A95D40FE /* MarkdownRenderer.swift in Sources */,
 				67F86667ECC43396ED2F85F7 /* MoteDocument.swift in Sources */,
 				910FFD2A2C9F2E5F23E30A08 /* MoteTheme.swift in Sources */,
 				77836DE8C3DD8686BF742348 /* NSMutableAttributedString+Tokens.swift in Sources */,
