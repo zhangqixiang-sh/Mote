@@ -137,25 +137,33 @@ final class MoteDocument: NSDocument {
     /// - 挡住系统标题栏材质层,标题栏高度部分呈现与文件区一致的背景色
     /// - gutter 行号区背景不会伸入标题栏(编辑区内容本就在标题栏下方)
     ///
+    /// 高度:不写死,动态跟随标题栏实际高度
+    /// (`window.frame.height - window.contentLayoutRect.height`)。
+    /// 加了 toolbar(如预览开关)后标题栏会被撑高,固定高度会盖不住,
+    /// 导致 gutter 行号背景从标题栏下沿漏出来。
+    ///
     /// `HeaderOverlayView.hitTest` 恒返回 nil:标题栏拖动/双击最大化/
     /// 红黄绿交通灯等系统手势全部走 NSWindow 原生路径,覆盖层仅视觉遮挡。
     private func installHeaderOverlay(in window: NSWindow) {
         guard let container = window.contentView?.superview else { return }
 
-        let overlay = HeaderOverlayView(frame: NSRect(
-            x: 0,
-            y: container.bounds.height - Self.headerOverlayHeight,
-            width: container.bounds.width,
-            height: Self.headerOverlayHeight
-        ))
-        // 窗口 resize 时:宽度跟随,顶部吸附
+        let overlay = HeaderOverlayView(frame: .zero)
+        overlay.bind(window: window)
+        // 窗口 resize 时:宽度跟随,顶部吸附(y 由 updateHeight 统一重算)
         overlay.autoresizingMask = [.width, .minYMargin]
         container.addSubview(overlay, positioned: .above, relativeTo: nil)
+        overlay.updateHeight()
 
         // 覆盖层加完后,把标题栏容器(含交通灯按钮)提升到覆盖层之上,
         // 避免红黄绿按钮被覆盖层挡住
         if let titlebar = Self.findView(named: "NSTitlebarContainerView", in: container) {
             container.addSubview(titlebar, positioned: .above, relativeTo: overlay)
+        }
+
+        // SwiftUI toolbar 在窗口布局后由 NSHostingView 挂载,会再撑高
+        // 标题栏;延迟一帧刷新兜底,确保覆盖层高度与最终标题栏一致
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak overlay] in
+            overlay?.updateHeight()
         }
     }
 
@@ -172,9 +180,9 @@ final class MoteDocument: NSDocument {
         return nil
     }
 
-    /// 标题栏实际高度(macOS unified titlebar,含 fullSizeContentView 时为 32pt)
-    private static let headerOverlayHeight: CGFloat = 32
-
+    /// 标题栏高度不再硬编码:由 HeaderOverlayView.updateHeight() 依据
+    /// `window.frame.height - window.contentLayoutRect.height` 动态计算
+    ///
     // MARK: - 文件读写(明文 UTF-8;编码检测将在 M4 实现)
 
     override func read(from data: Data, ofType typeName: String) throws {
@@ -200,11 +208,20 @@ final class MoteDocument: NSDocument {
 /// - 颜色 = 当前主题的编辑区背景色(`MoteThemeFactory`),与文件区背景
 ///   完全一致;`viewDidChangeEffectiveAppearance` 在系统深浅色外观切换
 ///   时自动更新
+/// - 高度动态 = 标题栏 + toolbar 实际高度
+///   (`window.frame.height - window.contentLayoutRect.height`),不写死:
+///   加 toolbar(预览开关)后标题栏会被撑高,固定高度会盖不住,导致
+///   gutter 行号区背景从标题栏下沿漏出。监听窗口 resize / 全屏切换
+///   时重算,覆盖层始终盖满整个标题栏区域
 /// - 作用:挡住透明标题栏透出的 gutter 行号区背景(#252526),避免其
 ///   伸入标题栏;标题栏高度部分呈现与文件区一致的沉浸式背景
 /// - `hitTest` 恒返回 nil:标题栏拖动/双击最大化/红黄绿交通灯等系统
 ///   手势全部走 NSWindow 原生路径,覆盖层只负责视觉遮挡
 private final class HeaderOverlayView: NSView {
+
+    /// 所跟踪的窗口(用于读取标题栏实际高度)
+    private weak var trackedWindow: NSWindow?
+    private var observers: [NSObjectProtocol] = []
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -216,6 +233,40 @@ private final class HeaderOverlayView: NSView {
         super.init(coder: coder)
         wantsLayer = true
         updateBackgroundColor()
+    }
+
+    deinit {
+        observers.forEach { NotificationCenter.default.removeObserver($0) }
+    }
+
+    /// 绑定窗口并监听布局变化:resize / 全屏进出都会改变标题栏高度
+    func bind(window: NSWindow) {
+        trackedWindow = window
+        let center = NotificationCenter.default
+        let names: [Notification.Name] = [
+            NSWindow.didResizeNotification,
+            NSWindow.didEnterFullScreenNotification,
+            NSWindow.didExitFullScreenNotification,
+        ]
+        observers = names.map { name in
+            center.addObserver(forName: name, object: window, queue: .main) { [weak self] _ in
+                self?.updateHeight()
+            }
+        }
+    }
+
+    /// 重算覆盖层高度与位置:顶部吸附,高度 = 标题栏 + toolbar 实际高度
+    func updateHeight() {
+        guard let window = trackedWindow, let superview = superview else { return }
+        // 标题栏高度 = 窗口高 - 内容布局区高(fullSizeContentView 下
+        // contentLayoutRect 顶部即标题栏下沿;toolbar 会撑高标题栏)
+        let titlebarHeight = max(0, window.frame.height - window.contentLayoutRect.height)
+        frame = NSRect(
+            x: 0,
+            y: superview.bounds.height - titlebarHeight,
+            width: superview.bounds.width,
+            height: titlebarHeight
+        )
     }
 
     /// 系统深浅色外观切换时,颜色跟随当前主题的编辑区背景色
