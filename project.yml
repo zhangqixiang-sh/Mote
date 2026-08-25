@@ -69,10 +69,76 @@ targets:
             UTTypeConformsTo: [public.csharp-source, public.source-code]
             UTTypeTagSpecification:
               public.filename-extension: [cs]
+          - UTTypeIdentifier: com.mote.go
+            UTTypeDescription: Go Source
+            UTTypeConformsTo: [public.source-code, public.text]
+            UTTypeTagSpecification:
+              public.filename-extension: [go]
+          - UTTypeIdentifier: com.mote.rust
+            UTTypeDescription: Rust Source
+            UTTypeConformsTo: [public.source-code, public.text]
+            UTTypeTagSpecification:
+              public.filename-extension: [rs]
+          - UTTypeIdentifier: com.mote.javascript
+            UTTypeDescription: JavaScript Source
+            UTTypeConformsTo: [public.source-code, public.text]
+            UTTypeTagSpecification:
+              public.filename-extension: [js, jsx, mjs, cjs]
+          - UTTypeIdentifier: com.mote.kotlin
+            UTTypeDescription: Kotlin Source
+            UTTypeConformsTo: [public.source-code, public.text]
+            UTTypeTagSpecification:
+              public.filename-extension: [kt, kts]
+          - UTTypeIdentifier: com.mote.scala
+            UTTypeDescription: Scala Source
+            UTTypeConformsTo: [public.source-code, public.text]
+            UTTypeTagSpecification:
+              public.filename-extension: [scala, sc]
+          - UTTypeIdentifier: com.mote.lua
+            UTTypeDescription: Lua Source
+            UTTypeConformsTo: [public.source-code, public.text]
+            UTTypeTagSpecification:
+              public.filename-extension: [lua]
+          - UTTypeIdentifier: com.mote.ini
+            UTTypeDescription: Configuration File
+            UTTypeConformsTo: [public.plain-text, public.text]
+            UTTypeTagSpecification:
+              public.filename-extension: [ini, cfg, conf]
+          - UTTypeIdentifier: com.mote.sql
+            UTTypeDescription: SQL Script
+            UTTypeConformsTo: [public.plain-text, public.text]
+            UTTypeTagSpecification:
+              public.filename-extension: [sql]
+          - UTTypeIdentifier: com.mote.plist
+            UTTypeDescription: Property List
+            UTTypeConformsTo: [public.plain-text, public.text]
+            UTTypeTagSpecification:
+              public.filename-extension: [plist]
+          - UTTypeIdentifier: com.mote.properties
+            UTTypeDescription: Properties File
+            UTTypeConformsTo: [public.plain-text, public.text]
+            UTTypeTagSpecification:
+              public.filename-extension: [properties]
+          - UTTypeIdentifier: com.mote.dart
+            UTTypeDescription: Dart Source
+            UTTypeConformsTo: [public.source-code, public.text]
+            UTTypeTagSpecification:
+              public.filename-extension: [dart]
+          - UTTypeIdentifier: com.mote.haskell
+            UTTypeDescription: Haskell Source
+            UTTypeConformsTo: [public.source-code, public.text]
+            UTTypeTagSpecification:
+              public.filename-extension: [hs]
+          - UTTypeIdentifier: com.mote.tex
+            UTTypeDescription: LaTeX Source
+            UTTypeConformsTo: [public.source-code, public.text]
+            UTTypeTagSpecification:
+              public.filename-extension: [tex]
         CFBundleDocumentTypes:
           - CFBundleTypeName: Mote Document
             CFBundleTypeRole: Editor
-            LSHandlerRank: Alternate
+            # Owner: 声明为这些类型的所有者,配合 LaunchServices 设置即可成为默认打开方式
+            LSHandlerRank: Owner
             NSDocumentClass: MoteDocument
             LSItemContentTypes:
               - public.plain-text
@@ -108,4 +174,17 @@ targets:
               - com.mote.cpp
               - com.mote.objc
               - com.mote.csharp
+              - com.mote.go
+              - com.mote.rust
+              - com.mote.javascript
+              - com.mote.kotlin
+              - com.mote.scala
+              - com.mote.lua
+              - com.mote.ini
+              - com.mote.sql
+              - com.mote.plist
+              - com.mote.properties
+              - com.mote.dart
+              - com.mote.haskell
+              - com.mote.tex
         LSApplicationCategoryType: public.app-category.developer-tools
