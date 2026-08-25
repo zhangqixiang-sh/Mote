@@ -63,6 +63,28 @@
 				<string>com.mote.dart</string>
 				<string>com.mote.haskell</string>
 				<string>com.mote.tex</string>
+				<string>public.yaml</string>
+				<string>public.toml</string>
+				<string>public.bash-script</string>
+				<string>public.zsh-script</string>
+				<string>net.daringfireball.markdown</string>
+				<string>org.golang.go-script</string>
+				<string>org.rust-lang.rust-script</string>
+				<string>org.kotlinlang.source</string>
+				<string>org.scala-lang.scala-source</string>
+				<string>org.lua.lua-source</string>
+				<string>org.haskell.haskell-script</string>
+				<string>org.iso.sql</string>
+				<string>org.tug.tex</string>
+				<string>com.netscape.javascript-source</string>
+				<string>com.microsoft.typescript</string>
+				<string>com.sun.java-source</string>
+				<string>com.microsoft.c-sharp</string>
+				<string>com.microsoft.ini</string>
+				<string>com.apple.log</string>
+				<string>com.apple.property-list</string>
+				<string>dev.dart.dart-script</string>
+				<string>com.coteditor.conf</string>
 			</array>
 			<key>NSDocumentClass</key>
 			<string>MoteDocument</string>

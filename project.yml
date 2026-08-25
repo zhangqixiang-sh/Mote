@@ -187,4 +187,27 @@ targets:
               - com.mote.dart
               - com.mote.haskell
               - com.mote.tex
+              # 系统/其他 app 声明的真实 UTI,需声明后才能成为其默认 handler
+              - public.yaml
+              - public.toml
+              - public.bash-script
+              - public.zsh-script
+              - net.daringfireball.markdown
+              - org.golang.go-script
+              - org.rust-lang.rust-script
+              - org.kotlinlang.source
+              - org.scala-lang.scala-source
+              - org.lua.lua-source
+              - org.haskell.haskell-script
+              - org.iso.sql
+              - org.tug.tex
+              - com.netscape.javascript-source
+              - com.microsoft.typescript
+              - com.sun.java-source
+              - com.microsoft.c-sharp
+              - com.microsoft.ini
+              - com.apple.log
+              - com.apple.property-list
+              - dev.dart.dart-script
+              - com.coteditor.conf
         LSApplicationCategoryType: public.app-category.developer-tools
