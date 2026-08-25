@@ -10,8 +10,9 @@ xcuserdata/
 # SwiftPM
 .swiftpm/
 
-# 本地工作数据(项目记忆等,不入库)
+# 本地AI工作数据
 .workbuddy/
+.trae/
 
 # 图标构建中间产物
 build-icons/

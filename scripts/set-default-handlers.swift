@@ -8,7 +8,7 @@
 //
 // 注意:
 //   - 仅"已声明处理"的类型可设置默认,故列表需与 project.yml 的 LSItemContentTypes 保持同步
-//   - html / markdown / plist 若被 Chrome/Qoder/Xcode 等通过"设为默认"机制保护,
+//   - markdown / plist 若被 Chrome/Qoder/Xcode 等通过"设为默认"机制保护,
 //     本脚本无法覆盖,需在 Finder 中右键文件 → 打开方式 → 更改全部
 import Foundation
 import CoreServices
@@ -24,7 +24,7 @@ let utis: [String] = [
     "public.objective-c-source", "public.objective-c-plus-plus-source",
     "public.python-script",
     "public.ruby-script", "public.php-script", "public.shell-script",
-    "public.html", "public.xml", "public.css", "public.log",
+    "public.xml", "public.css", "public.log",
     "public.perl-script",
     // Mote 自定义 UTI
     "com.mote.yaml", "com.mote.markdown", "com.mote.toml",
@@ -57,4 +57,4 @@ for uti in utis {
     else { failed += 1; print("FAIL(\(status)) \(uti)") }
 }
 print("---- 成功 \(setOK) / 失败 \(failed) ----")
-print("提示: html/markdown/plist 若被其他 app 保护,请在 Finder 手动 更改全部")
+print("提示: markdown/plist 若被其他 app 保护,请在 Finder 手动 更改全部")
