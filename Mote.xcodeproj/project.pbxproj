@@ -27,7 +27,6 @@
 		4BD7FC9BADB710A2561B1E9C /* SyntaxColorTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B8E41E6D12D6F0E9ADFDA3 /* SyntaxColorTheme.swift */; };
 		50A3CFBA7329FC5A353C417C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = AE3ED94B174381709F360210 /* README.md */; };
 		57D768F28B45BC79304953ED /* String+Range.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6123B3AA63B7BA930B1E663 /* String+Range.swift */; };
-		58845C93B69E967CB0EAD0B9 /* MarkdownPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2489FE0E36D5BC3A9C2EDDD7 /* MarkdownPreviewView.swift */; };
 		612B02100DE8A67EBC02270E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA900F85DDEB5073A2267594 /* Assets.xcassets */; };
 		67F86667ECC43396ED2F85F7 /* MoteDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE549EA57BC5428B0CD5BBDC /* MoteDocument.swift */; };
 		69E43EA7E781821C3B2A302C /* Paragraphs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1839AB4761BF054396CD7D72 /* Paragraphs.swift */; };
@@ -41,6 +40,7 @@
 		A57A21A52CDD2732FD029812 /* SourceCodeRegexLexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5099DF177BC8476D2D8A07A /* SourceCodeRegexLexer.swift */; };
 		AA337CE8EC1EE522ECC5424D /* Paragraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA774F154AA8CBFC2CFAB1DD /* Paragraph.swift */; };
 		B5F787EF6373DCB3D73E4C43 /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6FA80E825D5E52CCCB7B982 /* Lexer.swift */; };
+		B65CDD2FC9FDB64A8C6BEFF1 /* PreviewPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA9E623923A634E6F1F0B0B3 /* PreviewPanelView.swift */; };
 		D1FE755C44913F6E263D5EE9 /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34810BBF0DFA28917807B30B /* EditorView.swift */; };
 		E87ADD9DA43AAA8FB6FF4712 /* TextViewWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F582C07893F556CB23D36528 /* TextViewWrapperView.swift */; };
 /* End PBXBuildFile section */
@@ -54,7 +54,6 @@
 		1F25E066445A974ED04DE5BC /* MarkdownRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRenderer.swift; sourceTree = "<group>"; };
 		215178A667ACE2D8A78FD01A /* LICENSE */ = {isa = PBXFileReference; path = LICENSE; sourceTree = "<group>"; };
 		2414F678524EAE050D372964 /* Types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Types.swift; sourceTree = "<group>"; };
-		2489FE0E36D5BC3A9C2EDDD7 /* MarkdownPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownPreviewView.swift; sourceTree = "<group>"; };
 		34810BBF0DFA28917807B30B /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
 		3CB3E329140217DB72056A57 /* SyntaxTextView+TextViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SyntaxTextView+TextViewDelegate.swift"; sourceTree = "<group>"; };
 		4A34FDAD20B0D70C79BEBF57 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
@@ -79,6 +78,7 @@
 		D5099DF177BC8476D2D8A07A /* SourceCodeRegexLexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceCodeRegexLexer.swift; sourceTree = "<group>"; };
 		D747E693E864776732BCBEEA /* SyntaxTextViewLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxTextViewLayoutManager.swift; sourceTree = "<group>"; };
 		D90A87E467A6F94374375E8E /* NSTextView+UIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSTextView+UIKit.swift"; sourceTree = "<group>"; };
+		DA9E623923A634E6F1F0B0B3 /* PreviewPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewPanelView.swift; sourceTree = "<group>"; };
 		EB7BA154EB773D9E59D5A02B /* GenericCodeLexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericCodeLexer.swift; sourceTree = "<group>"; };
 		ECC944665EF1A2829955BC36 /* NSMutableAttributedString+Tokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMutableAttributedString+Tokens.swift"; sourceTree = "<group>"; };
 		EF3B09DCE8A890415437C960 /* JavaLexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JavaLexer.swift; sourceTree = "<group>"; };
@@ -164,8 +164,8 @@
 			isa = PBXGroup;
 			children = (
 				F71359FA2A15B1350F5666DF /* .gitkeep */,
-				2489FE0E36D5BC3A9C2EDDD7 /* MarkdownPreviewView.swift */,
 				1F25E066445A974ED04DE5BC /* MarkdownRenderer.swift */,
+				DA9E623923A634E6F1F0B0B3 /* PreviewPanelView.swift */,
 			);
 			path = Preview;
 			sourceTree = "<group>";
@@ -338,7 +338,6 @@
 				B5F787EF6373DCB3D73E4C43 /* Lexer.swift in Sources */,
 				1EDBCB6A41579E4EA62439E7 /* Lexers.swift in Sources */,
 				99455F32270546F3846D6808 /* LineNumberLayoutManager.swift in Sources */,
-				58845C93B69E967CB0EAD0B9 /* MarkdownPreviewView.swift in Sources */,
 				1CDC69170B009061A95D40FE /* MarkdownRenderer.swift in Sources */,
 				67F86667ECC43396ED2F85F7 /* MoteDocument.swift in Sources */,
 				910FFD2A2C9F2E5F23E30A08 /* MoteTheme.swift in Sources */,
@@ -347,6 +346,7 @@
 				151EE7974CD342C899759ED0 /* OCamlLexer.swift in Sources */,
 				AA337CE8EC1EE522ECC5424D /* Paragraph.swift in Sources */,
 				69E43EA7E781821C3B2A302C /* Paragraphs.swift in Sources */,
+				B65CDD2FC9FDB64A8C6BEFF1 /* PreviewPanelView.swift in Sources */,
 				8BB9177DD8FCC75DE3015275 /* Python3Lexer.swift in Sources */,
 				4A85B49BA6F688FB08EAEB87 /* RegexLexer.swift in Sources */,
 				A57A21A52CDD2732FD029812 /* SourceCodeRegexLexer.swift in Sources */,

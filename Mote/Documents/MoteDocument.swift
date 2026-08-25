@@ -27,13 +27,25 @@ final class MoteDocument: NSDocument {
         return resolved
     }
 
-    /// 是否 Markdown 文档(按扩展名),决定是否提供右侧分栏预览(M3)
-    var isMarkdown: Bool {
+    /// 统一预览面板的类型(PRD 决策 4:按文件类型路由)
+    enum PreviewKind {
+        /// Markdown:由 MarkdownRenderer 渲染
+        case markdown
+        /// SVG / HTML:原样静态渲染(禁 JS)
+        case webDocument
+    }
+
+    /// 是否提供右侧分栏预览(M3 起;SVG/HTML 预览自 M4 起)
+    var isPreviewable: Bool { previewKind != nil }
+
+    var previewKind: PreviewKind? {
         switch fileURL?.pathExtension.lowercased() {
         case "md", "markdown", "mdown", "mkd":
-            return true
+            return .markdown
+        case "svg", "svgz", "html", "htm", "xhtml":
+            return .webDocument
         default:
-            return false
+            return nil
         }
     }
 
@@ -91,7 +103,7 @@ final class MoteDocument: NSDocument {
         let hostingController = NSHostingController(rootView: rootView)
         let window = NSWindow(contentViewController: hostingController)
         // Markdown 文档默认带右侧预览分栏,初始窗口加宽
-        window.setContentSize(NSSize(width: isMarkdown ? 1120 : 880, height: 640))
+        window.setContentSize(NSSize(width: isPreviewable ? 1120 : 880, height: 640))
         window.title = displayName
         // 标题栏透明沉浸式:
         // - .fullSizeContentView + titlebarAppearsTransparent:内容视图

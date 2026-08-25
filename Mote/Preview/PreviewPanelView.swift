@@ -1,23 +1,29 @@
 import SwiftUI
 import WebKit
 
-/// Markdown 预览面板(只读 WKWebView)
+/// 统一预览面板(只读 WKWebView)
 ///
-/// 架构约定(PRD):预览 = 只读 WKWebView,懒加载、按需创建、关闭即释放。
-/// - 懒加载/按需创建:仅当文档为 Markdown 且预览开关打开时,SwiftUI 才
-///   实例化本视图;非 Markdown 文档完全不创建 WebView
+/// 架构约定(PRD):预览 = 只读 WKWebView,懒加载、按需创建、关闭即释放;
+/// 按文件类型路由:`markdown` → MarkdownRenderer 渲染,`webDocument`
+/// (SVG/HTML)→ 原样静态渲染。
+/// - 懒加载/按需创建:仅当文档可预览且预览开关打开时,SwiftUI 才实例化
+///   本视图;普通代码文件完全不创建 WebView
 /// - 关闭即释放:开关关闭后视图从层级移除,WKWebView 随之释放
-/// - 禁 JS:预览为纯静态渲染,`allowsContentJavaScript = false` 省内存
-/// - 深浅色:内联 CSS 用 `prefers-color-scheme` 媒体查询,跟随系统外观,
-///   无需从 Swift 侧注入主题
+/// - 禁 JS:`allowsContentJavaScript = false`(Markdown 预览与 SVG/HTML
+///   均为静态渲染,省内存、杜絕脚本注入面)
+/// - 深浅色:Markdown 用 `prefers-color-scheme` 媒体查询跟随系统;
+///   SVG/HTML 原样渲染,保留文件自身样式
 /// - 边输入边刷新:`updateNSView` 内做 ~250ms 防抖,停止输入后才重渲染
-/// - 相对图片:`loadHTMLString` 的 baseURL 指向文档所在目录
-struct MarkdownPreviewView: NSViewRepresentable {
+/// - 相对资源:`loadHTMLString` 的 baseURL 指向文档所在目录
+struct PreviewPanelView: NSViewRepresentable {
 
-    /// 当前 Markdown 源文本(每次编辑后由 EditorView 传入)
-    let markdown: String
+    /// 预览类型(MoteDocument.PreviewKind)
+    let kind: MoteDocument.PreviewKind
 
-    /// 文档文件 URL(取所在目录作为 baseURL,支持相对路径图片)
+    /// 当前文档源文本(每次编辑后由 EditorView 传入)
+    let content: String
+
+    /// 文档文件 URL(取所在目录作为 baseURL,支持相对路径图片等资源)
     let fileURL: URL?
 
     func makeNSView(context: Context) -> WKWebView {
@@ -28,13 +34,13 @@ struct MarkdownPreviewView: NSViewRepresentable {
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.setValue(false, forKey: "drawsBackground") // 透明底,加载前不闪白
         render(into: webView)
-        context.coordinator.lastRenderedMarkdown = markdown
+        context.coordinator.lastRenderedContent = content
         return webView
     }
 
     func updateNSView(_ webView: WKWebView, context: Context) {
-        guard markdown != context.coordinator.lastRenderedMarkdown else { return }
-        context.coordinator.lastRenderedMarkdown = markdown
+        guard content != context.coordinator.lastRenderedContent else { return }
+        context.coordinator.lastRenderedContent = content
         context.coordinator.scheduleRender { [weak webView] in
             guard let webView = webView else { return }
             render(into: webView)
@@ -48,24 +54,31 @@ struct MarkdownPreviewView: NSViewRepresentable {
     // MARK: - 渲染
 
     private func render(into webView: WKWebView) {
-        let body = MarkdownRenderer.render(markdown)
-        let html = """
-        <!DOCTYPE html>
-        <html>
-        <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <style>\(Self.stylesheet)</style>
-        </head>
-        <body>\(body)</body>
-        </html>
-        """
-        // baseURL 指向文档所在目录,使相对路径图片可加载
+        let html: String
+        switch kind {
+        case .markdown:
+            let body = MarkdownRenderer.render(content)
+            html = """
+            <!DOCTYPE html>
+            <html>
+            <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <style>\(Self.markdownStylesheet)</style>
+            </head>
+            <body>\(body)</body>
+            </html>
+            """
+        case .webDocument:
+            // SVG / HTML 原样渲染:保留文件自身结构与样式
+            html = content
+        }
+        // baseURL 指向文档所在目录,使相对路径资源可加载
         webView.loadHTMLString(html, baseURL: fileURL?.deletingLastPathComponent())
     }
 
-    /// 预览样式:跟随系统深浅色(prefers-color-scheme)
-    private static let stylesheet = """
+    /// Markdown 预览样式:跟随系统深浅色(prefers-color-scheme)
+    private static let markdownStylesheet = """
     :root {
         color-scheme: light dark;
     }
@@ -137,7 +150,7 @@ struct MarkdownPreviewView: NSViewRepresentable {
 
     /// 防抖调度:编辑停止 ~250ms 后才重新渲染,避免每次按键都整页刷新
     final class Coordinator {
-        var lastRenderedMarkdown: String?
+        var lastRenderedContent: String?
         private var pendingWork: DispatchWorkItem?
 
         func scheduleRender(_ render: @escaping () -> Void) {

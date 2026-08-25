@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9684f8"/>
+      <stop offset="1" stop-color="#3f3592"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="480" height="320" rx="16" fill="url(#bg)"/>
+
+  <!-- 字母 M -->
+  <path d="M 150 240 L 150 90 L 240 172 L 330 90 L 330 226"
+        fill="none" stroke="#ffffff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- 粒子与尾迹(呼应 App 图标"尘起") -->
+  <circle cx="352" cy="252" r="30" fill="url(#glow)"/>
+  <circle cx="352" cy="252" r="11" fill="#ffffff"/>
+  <circle cx="380" cy="272" r="5" fill="#ffffff" opacity="0.7"/>
+  <circle cx="350" cy="282" r="3" fill="#ffffff" opacity="0.5"/>
+  <circle cx="388" cy="244" r="2.5" fill="#ffffff" opacity="0.4"/>
+
+  <!-- 文字 -->
+  <text x="240" y="298" text-anchor="middle"
+        font-family="-apple-system, 'PingFang SC', sans-serif"
+        font-size="15" fill="#ffffff" opacity="0.85">Mote · SVG 预览</text>
+</svg>
