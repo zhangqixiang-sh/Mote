@@ -183,21 +183,28 @@ final class MoteDocument: NSDocument {
     /// 标题栏高度不再硬编码:由 HeaderOverlayView.updateHeight() 依据
     /// `window.frame.height - window.contentLayoutRect.height` 动态计算
     ///
-    // MARK: - 文件读写(明文 UTF-8;编码检测将在 M4 实现)
+    // MARK: - 自动保存(M4)
+
+    /// 启用系统自动保存:编辑后自动写回原文件,无需手动 ⌘S
+    override class var autosavesInPlace: Bool { true }
+
+    // MARK: - 文件读写(编码自动检测:M4 实现)
+
+    /// 当前文档编码(读入时检测,保存时按原编码写回;新建文档默认 UTF-8)
+    private(set) var encoding: String.Encoding = .utf8
+
+    /// 读入时是否带 BOM(保存时保留)
+    private var hasBOM = false
 
     override func read(from data: Data, ofType typeName: String) throws {
-        guard let string = String(data: data, encoding: .utf8) else {
-            throw NSError(
-                domain: "MoteDocumentError",
-                code: 1,
-                userInfo: [NSLocalizedDescriptionKey: "无法以 UTF-8 解码文件内容(编码检测将在 M4 实现)"]
-            )
-        }
-        text = string
+        let result = try TextEncodingDetector.decode(data)
+        text = result.text
+        encoding = result.encoding
+        hasBOM = result.hasBOM
     }
 
     override func data(ofType typeName: String) throws -> Data {
-        Data(text.utf8)
+        TextEncodingDetector.encode(text, encoding: encoding, hasBOM: hasBOM)
     }
 }
 
