@@ -1,6 +1,6 @@
 /* ============================================================
    Mote — 产品官网
-   原则：零 webfont、跟随系统深浅色；JS 仅 hero 复制按钮一处内联脚本。
+   原则：零 webfont、跟随系统深浅色；JS 仅 hero 内联脚本两处（复制按钮 + 外观预览切换）。
    字体全部来自 macOS 内置字体栈（宋体标题 / Didot 数字 / SF Mono）。
    ============================================================ */
 
@@ -20,7 +20,7 @@
   --accent-ink: #16112d;
   --glow: rgba(130, 108, 246, 0.20);
   --ok: #6fd598;
-  /* 编辑器窗口（两种主题下都保持深色，像一张产品截图） */
+  /* 编辑器窗口：默认深色（像一张产品截图），浅色系统或手动预览时切换浅色配色（见 .window 覆盖） */
   --editor-bg: #0e0b18;
   --editor-line-no: rgba(235, 232, 250, 0.22);
   --editor-text: #d9d6ea;
@@ -32,7 +32,7 @@
   --song: "Songti SC", "STSong", "Noto Serif SC", "SimSun", serif;
   --didot: "Didot", "Bodoni 72", "Times New Roman", serif;
   --mono: ui-monospace, "SF Mono", "Menlo", "Consolas", monospace;
-  /* 语法高亮（编辑器窗口固定深色配色） */
+  /* 语法高亮（编辑器窗口深色配色；浅色配色见 .window 覆盖） */
   --c-kw: #b4a4ff;
   --c-ty: #7cd6fd;
   --c-st: #ffd479;
@@ -361,6 +361,7 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); }
   inset: -8% -6%;
   background: radial-gradient(50% 50% at 50% 42%, var(--glow), transparent 72%);
   filter: blur(6px);
+  pointer-events: none;
 }
 
 .window {
@@ -371,6 +372,51 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); }
   box-shadow: var(--window-shadow);
   transform: perspective(1400px) rotateY(-2.5deg) rotateX(1deg);
   aspect-ratio: 3 / 2;
+  /* 预览窗格（Markdown 渲染示意）的深色文字，随下方浅色覆盖一起切换 */
+  --md-heading: #f0eefc;
+  --md-body: #b9b5cd;
+  --md-strong: #e6e2f8;
+  --md-quote: #cfcbe6;
+}
+
+/* 浅色外观：示意窗口跟随系统浅色（无 JS 也可生效），或用户点击「浅色」手动预览。
+   配色为 Xcode 浅色风格，与页面浅色主题同一色温。 */
+.window[data-appearance="light"] {
+  --editor-bg: #fcfbf8;
+  --editor-pane2: #f4f1ea;
+  --editor-text: #2a2740;
+  --editor-line-no: rgba(27, 23, 38, 0.32);
+  --window-border: rgba(24, 18, 44, 0.14);
+  --window-shadow: 0 30px 70px -22px rgba(30, 20, 70, 0.3), 0 0 0 1px var(--window-border);
+  --c-kw: #7141d6;
+  --c-ty: #0f68b3;
+  --c-st: #c2410c;
+  --c-cm: #9a94ac;
+  --c-fn: #157a4e;
+  --md-heading: #1c1830;
+  --md-body: #5c5770;
+  --md-strong: #141126;
+  --md-quote: #45405c;
+}
+
+@media (prefers-color-scheme: light) {
+  .window:not([data-appearance="dark"]) {
+    --editor-bg: #fcfbf8;
+    --editor-pane2: #f4f1ea;
+    --editor-text: #2a2740;
+    --editor-line-no: rgba(27, 23, 38, 0.32);
+    --window-border: rgba(24, 18, 44, 0.14);
+    --window-shadow: 0 30px 70px -22px rgba(30, 20, 70, 0.3), 0 0 0 1px var(--window-border);
+    --c-kw: #7141d6;
+    --c-ty: #0f68b3;
+    --c-st: #c2410c;
+    --c-cm: #9a94ac;
+    --c-fn: #157a4e;
+    --md-heading: #1c1830;
+    --md-body: #5c5770;
+    --md-strong: #141126;
+    --md-quote: #45405c;
+  }
 }
 
 .titlebar {
@@ -386,24 +432,6 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); }
 .dot.red { background: #ff5f57; }
 .dot.yellow { background: #febc2e; }
 .dot.green { background: #28c840; }
-
-.path {
-  flex: 1;
-  text-align: center;
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--editor-line-no);
-}
-
-.chip {
-  font-family: var(--mono);
-  font-size: 10.5px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
-  color: var(--accent-2);
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
-}
 
 .panes {
   display: grid;
@@ -450,25 +478,71 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); }
   font-family: var(--song);
   font-weight: 900;
   font-size: 17px;
-  color: #f0eefc;
+  color: var(--md-heading);
   padding-bottom: 9px;
   border-bottom: 1px solid var(--window-border);
   margin-bottom: 12px;
 }
 
-.md-p { font-size: 12.5px; color: #b9b5cd; margin-bottom: 12px; }
-.md-p Strong, .md-p strong { color: #e6e2f8; }
+.md-p { font-size: 12.5px; color: var(--md-body); margin-bottom: 12px; }
+.md-p Strong, .md-p strong { color: var(--md-strong); }
 
 .md-ul { list-style: none; margin-bottom: 14px; }
-.md-ul li { font-size: 12.5px; color: #b9b5cd; padding-left: 16px; position: relative; line-height: 2; }
+.md-ul li { font-size: 12.5px; color: var(--md-body); padding-left: 16px; position: relative; line-height: 2; }
 .md-ul li::before { content: ""; position: absolute; left: 2px; top: 11px; width: 6px; height: 6px; border-radius: 50%; background: var(--c-kw); }
 
 .md-quote {
   font-size: 12.5px;
-  color: #cfcbe6;
+  color: var(--md-quote);
   border-left: 3px solid var(--c-kw);
   padding: 2px 0 2px 12px;
   font-family: var(--song);
+}
+
+/* ---------- 外观预览切换（产品本身无此设置，仅预览示意图用） ---------- */
+
+.appearance-row {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-top: 14px;
+}
+
+.appearance-hint {
+  font-size: 11.5px;
+  color: var(--faint);
+  letter-spacing: 0.02em;
+}
+
+.appearance-toggle {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.appearance-toggle button {
+  border: none;
+  border-radius: 6px;
+  padding: 3px 10px;
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--dim);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.appearance-toggle button:hover { color: var(--text); }
+
+.appearance-toggle button.active {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
 }
 
 /* ---------- 语言跑马灯 ---------- */
@@ -697,9 +771,9 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); }
 @media (max-width: 640px) {
   .panes { grid-template-columns: 1fr; }
   .preview-pane { display: none; }
-  .titlebar .chip { display: none; }
   .window { aspect-ratio: auto; }
   .hero-visual { margin-bottom: 14px; }
+  .appearance-row { justify-content: center; }
 }
 
 /* ---------- 动效偏好 ---------- */

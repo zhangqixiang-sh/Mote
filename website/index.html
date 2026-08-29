@@ -48,13 +48,11 @@
         <p class="req">macOS 14 Sonoma 或更高 · Apple Silicon（M 系列）</p>
       </div>
 
-      <div class="hero-visual" aria-hidden="true">
-        <div class="glow"></div>
-        <figure class="window">
+      <div class="hero-visual">
+        <div class="glow" aria-hidden="true"></div>
+        <figure class="window" aria-hidden="true">
           <div class="titlebar">
             <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-            <span class="path">~/Documents/HelloMote.swift</span>
-            <span class="chip">自动保存 ✓</span>
           </div>
           <div class="panes">
             <div class="code-pane">
@@ -72,6 +70,13 @@
             </div>
           </div>
         </figure>
+        <div class="appearance-row">
+          <p class="appearance-hint">应用外观跟随系统明暗自动切换，此处可手动预览</p>
+          <div class="appearance-toggle" id="appearance-toggle" role="group" aria-label="预览窗口外观">
+            <button type="button" data-mode="dark">深色</button>
+            <button type="button" data-mode="light">浅色</button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -252,6 +257,32 @@
           btn.classList.remove("copied");
         }, 1800);
       }
+    })();
+
+    // 外观预览切换：示意图默认跟随系统明暗（与产品行为一致），按钮仅手动预览用
+    (function () {
+      var win = document.querySelector(".window");
+      var toggle = document.getElementById("appearance-toggle");
+      if (!win || !toggle) return;
+      var buttons = toggle.querySelectorAll("button");
+      var mq = window.matchMedia("(prefers-color-scheme: light)");
+      function render() {
+        var mode = win.getAttribute("data-appearance") || (mq.matches ? "light" : "dark");
+        for (var i = 0; i < buttons.length; i++) {
+          var b = buttons[i];
+          var on = b.getAttribute("data-mode") === mode;
+          b.classList.toggle("active", on);
+          b.setAttribute("aria-pressed", on ? "true" : "false");
+        }
+      }
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].addEventListener("click", function () {
+          win.setAttribute("data-appearance", this.getAttribute("data-mode"));
+          render();
+        });
+      }
+      if (mq.addEventListener) mq.addEventListener("change", render);
+      render();
     })();
   </script>
 </body>

@@ -3,6 +3,10 @@
 极致的轻量 macOS 文本编辑器：打开速度优先、内存占用最低、纯原生体验，同时具备代码高亮与 Markdown / SVG 渲染预览。
 
 <p align="center">
+  <a href="https://zhangqixiang-sh.github.io/Mote/"><strong>🌐 官方网站</strong></a> · https://zhangqixiang-sh.github.io/Mote/
+</p>
+
+<p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/editor-dark.png">
     <img src="assets/screenshots/editor-light.png" alt="Mote：左侧 Markdown 语法高亮，右侧实时渲染预览，深浅色主题跟随系统">
