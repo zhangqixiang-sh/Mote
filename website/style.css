@@ -1,6 +1,6 @@
 /* ============================================================
    Mote — 产品官网
-   原则：零 JS、零 webfont、跟随系统深浅色。
+   原则：零 webfont、跟随系统深浅色；JS 仅 hero 复制按钮一处内联脚本。
    字体全部来自 macOS 内置字体栈（宋体标题 / Didot 数字 / SF Mono）。
    ============================================================ */
 
@@ -166,7 +166,7 @@ section { scroll-margin-top: 76px; }
 
 h1, h2 { font-family: var(--song); font-weight: 900; letter-spacing: 0.02em; line-height: 1.22; }
 
-h1 { font-size: clamp(2.5rem, 6vw, 4.4rem); }
+h1 { font-size: clamp(2.4rem, 5.2vw, 4rem); }
 
 h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); }
 
@@ -227,14 +227,87 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); }
   letter-spacing: 0.04em;
 }
 
+/* ---------- 一键安装命令 ---------- */
+
+.install {
+  flex: 1 1 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.install-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 7px 7px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px -18px rgba(0, 0, 0, 0.25);
+}
+
+.install-cmd {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.install-cmd .prompt {
+  color: var(--accent);
+  user-select: none;
+}
+
+.copy-btn {
+  flex-shrink: 0;
+  padding: 4px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 7px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  background: transparent;
+  color: var(--dim);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s, transform 0.15s;
+}
+
+.copy-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  transform: translateY(-1px);
+}
+
+.copy-btn:active { transform: translateY(0); }
+
+.copy-btn.copied {
+  color: var(--ok);
+  border-color: var(--ok);
+  background: color-mix(in srgb, var(--ok) 8%, transparent);
+}
+
+.install-hint {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--faint);
+  letter-spacing: 0.02em;
+}
+
 /* ---------- Hero ---------- */
 
 .hero {
   position: relative;
   display: grid;
-  grid-template-columns: 1.04fr 0.96fr;
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.1fr);
   align-items: center;
-  gap: clamp(32px, 5vw, 72px);
+  gap: clamp(32px, 4.5vw, 64px);
   min-height: 92vh;
   padding-top: 128px;
   padding-bottom: 80px;
@@ -264,34 +337,10 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); }
 .hero-copy > *:nth-child(4) { animation-delay: 0.24s; }
 .hero-copy > *:nth-child(5) { animation-delay: 0.30s; }
 .hero-copy > *:nth-child(6) { animation-delay: 0.34s; }
-.hero-copy > *:nth-child(7) { animation-delay: 0.40s; }
 
 @keyframes rise {
   from { opacity: 0; transform: translateY(18px); }
   to   { opacity: 1; transform: none; }
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-  margin-top: 40px;
-  padding-top: 26px;
-  border-top: 1px solid var(--border);
-}
-
-.stats dt {
-  font-family: var(--mono);
-  font-size: 11.5px;
-  letter-spacing: 0.1em;
-  color: var(--faint);
-}
-
-.stats dd {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-  margin-top: 4px;
 }
 
 .num {
@@ -320,7 +369,8 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); }
   overflow: hidden;
   background: var(--editor-bg);
   box-shadow: var(--window-shadow);
-  transform: perspective(1400px) rotateY(-4deg) rotateX(1.5deg);
+  transform: perspective(1400px) rotateY(-2.5deg) rotateX(1deg);
+  aspect-ratio: 3 / 2;
 }
 
 .titlebar {
@@ -363,21 +413,21 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); }
 .code-pane, .preview-pane { min-width: 0; }
 
 .code-pane {
-  padding: 18px 16px 20px;
+  padding: 20px 18px 22px;
   font-family: var(--mono);
-  font-size: 12.5px;
-  line-height: 1.85;
+  font-size: 13px;
+  line-height: 1.9;
   color: var(--editor-text);
   overflow: hidden;
 }
 
 .code-pane i {
   display: inline-block;
-  width: 22px;
-  margin-right: 14px;
+  width: 20px;
+  margin-right: 12px;
   text-align: right;
   font-style: normal;
-  font-size: 10.5px;
+  font-size: 11px;
   color: var(--editor-line-no);
   user-select: none;
 }
@@ -391,7 +441,7 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); }
 .line { display: block; white-space: pre; }
 
 .preview-pane {
-  padding: 18px 18px;
+  padding: 20px 20px;
   border-left: 1px solid var(--window-border);
   background: var(--editor-pane2);
 }
@@ -399,47 +449,26 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); }
 .md-h {
   font-family: var(--song);
   font-weight: 900;
-  font-size: 16px;
+  font-size: 17px;
   color: #f0eefc;
-  padding-bottom: 8px;
+  padding-bottom: 9px;
   border-bottom: 1px solid var(--window-border);
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
-.md-p { font-size: 12px; color: #b9b5cd; margin-bottom: 10px; }
+.md-p { font-size: 12.5px; color: #b9b5cd; margin-bottom: 12px; }
 .md-p Strong, .md-p strong { color: #e6e2f8; }
 
-.md-ul { list-style: none; margin-bottom: 12px; }
-.md-ul li { font-size: 12px; color: #b9b5cd; padding-left: 16px; position: relative; line-height: 2; }
+.md-ul { list-style: none; margin-bottom: 14px; }
+.md-ul li { font-size: 12.5px; color: #b9b5cd; padding-left: 16px; position: relative; line-height: 2; }
 .md-ul li::before { content: ""; position: absolute; left: 2px; top: 11px; width: 6px; height: 6px; border-radius: 50%; background: var(--c-kw); }
 
 .md-quote {
-  font-size: 12px;
+  font-size: 12.5px;
   color: #cfcbe6;
   border-left: 3px solid var(--c-kw);
   padding: 2px 0 2px 12px;
   font-family: var(--song);
-}
-
-.badge {
-  position: absolute;
-  z-index: 2;
-  background: color-mix(in srgb, var(--bg) 78%, transparent);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  font-size: 12px;
-  padding: 8px 14px;
-  border-radius: 12px;
-  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5);
-  animation: float 5.5s ease-in-out infinite alternate;
-}
-
-.badge-a { left: -14px; bottom: 34px; }
-.badge-b { right: -10px; top: 64px; animation-delay: 1.4s; }
-
-@keyframes float {
-  from { transform: translateY(-4px); }
-  to   { transform: translateY(6px); }
 }
 
 /* ---------- 语言跑马灯 ---------- */
@@ -650,9 +679,9 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); }
 
 /* ---------- 响应式 ---------- */
 
-@media (max-width: 980px) {
-  .hero { grid-template-columns: 1fr; min-height: 0; padding-top: 110px; }
-  .hero-visual { max-width: 640px; }
+@media (max-width: 1140px) {
+  .hero { grid-template-columns: 1fr; min-height: 0; padding-top: 110px; gap: 56px; }
+  .hero-visual { max-width: 640px; margin-inline: auto; width: 100%; }
   .window { transform: none; }
   .perf { grid-template-columns: 1fr; }
   .perf-intro { position: static; }
@@ -663,15 +692,13 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); }
   .feature-grid { grid-template-columns: 1fr; }
   .card.span2 { grid-column: auto; }
   .card.wide { grid-column: auto; flex-direction: column; align-items: flex-start; gap: 10px; }
-  .stats { grid-template-columns: repeat(2, 1fr); gap: 24px 18px; }
 }
 
 @media (max-width: 640px) {
   .panes { grid-template-columns: 1fr; }
   .preview-pane { display: none; }
   .titlebar .chip { display: none; }
-  .badge-b { display: none; }
-  .badge-a { left: 8px; bottom: -14px; }
+  .window { aspect-ratio: auto; }
   .hero-visual { margin-bottom: 14px; }
 }
 

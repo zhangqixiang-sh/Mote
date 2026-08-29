@@ -9,6 +9,16 @@
   </picture>
 </p>
 
+## 安装
+
+一行命令，自动下载最新 Release、移除 Gatekeeper 隔离标记、安装到「应用程序」并启动：
+
+```bash
+curl -fsSL https://zhangqixiang-sh.github.io/Mote/install.sh | bash
+```
+
+> 应用未做 Apple 开发者签名/公证，浏览器直接下载 zip 会被 Gatekeeper 拦截（提示"已损坏，无法打开"或"无法验证"）。脚本方式通过 `curl` 下载，不产生隔离标记，因此无此问题。
+
 ## 特性
 
 - **代码语法高亮**：24 种语言（23 种语言 + 纯文本兜底），基于 Sourceful 词法分析引擎，覆盖 Swift / Python / JavaScript / TypeScript / Java / Go / Rust / C / C++ / Objective-C / C# / Ruby / PHP / Shell / SQL / JSON / YAML / TOML / Markdown / HTML / XML / CSS / OCaml 等
@@ -71,7 +81,7 @@ Mote/
 ├── Encoding/       # 编码自动检测（UTF-8/16/GBK/GB18030）
 └── Vendor/         # Sourceful 高亮引擎
 docs/PRD.md         # 产品需求文档
-website/            # 产品官网（纯静态，GitHub Pages 自动部署）
+website/            # 产品官网（纯静态，GitHub Pages 自动部署）+ install.sh 一键安装脚本
 scripts/            # set-default-handlers.swift（设置默认打开方式）
 assets/             # App 图标源（icon.svg）、备用 icns 与 README 截图（screenshots/）
 project.yml         # XcodeGen 工程定义（唯一事实来源）
@@ -82,7 +92,7 @@ project.yml         # XcodeGen 工程定义（唯一事实来源）
 | 工作流 | 触发条件 | 作用 |
 |--------|----------|------|
 | `.github/workflows/deploy-website.yml` | push 到 main 且改动 `website/` | 自动部署官网到 GitHub Pages |
-| `.github/workflows/release.yml` | push `v*` 标签 | 云端构建 Release 版 Mote.app，打包发布到 GitHub Releases（产物固定名 `Mote-macOS.zip`，官网下载按钮始终指向最新版） |
+| `.github/workflows/release.yml` | push `v*` 标签 | 云端构建 Release 版 Mote.app，打包发布到 GitHub Releases（产物固定名 `Mote-macOS.zip`，官网一键安装命令始终安装最新版） |
 
 > 网页部署首次启用需在仓库 Settings → Pages → Source 选择「GitHub Actions」。
 

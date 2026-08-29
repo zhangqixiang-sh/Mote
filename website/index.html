@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mote — 极致轻量的 macOS 文本编辑器</title>
-  <meta name="description" content="免费开源的 macOS 原生文本编辑器：冷启动 214ms、常驻内存 43MB、安装包 836KB。24 种语言语法高亮、Markdown / SVG 实时预览、中文编码自动检测、自动保存。">
+  <meta name="description" content="免费开源的 macOS 原生文本编辑器：语法高亮、Markdown / SVG 实时预览、中文编码自动检测、自动保存。100% 原生，冷启动快、常驻内存小、安装包轻巧。">
   <meta property="og:title" content="Mote — 极致轻量的 macOS 文本编辑器">
-  <meta property="og:description" content="打开即编辑，轻若无物。冷启动 214ms 的 100% 原生 macOS 编辑器，免费开源（MIT）。">
+  <meta property="og:description" content="打开即编辑，轻若无物。100% 原生的 macOS 编辑器，免费开源（MIT）。">
   <meta property="og:type" content="website">
   <meta name="theme-color" content="#0c0a13" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#faf8f4" media="(prefers-color-scheme: light)">
@@ -34,18 +34,18 @@
         <p class="eyebrow"><span class="pulse" aria-hidden="true"></span>开源免费 · MIT · 100% 原生 AppKit</p>
         <h1>打开即编辑，<br>轻若无物。</h1>
         <p class="serif-line" aria-hidden="true">Instantly. Effortlessly. Natively.</p>
-        <p class="lede">Mote 是一款免费开源的 macOS 原生文本编辑器：100% TextKit 渲染，冷启动只要 214 毫秒，常驻内存 43MB，安装包不足 1MB。语法高亮、Markdown / SVG 预览、中文编码检测、自动保存——一个都不少。</p>
+        <p class="lede">Mote 是一款免费开源的 macOS 原生文本编辑器：100% TextKit 渲染，冷启动快、常驻内存小、安装包轻巧。语法高亮、Markdown / SVG 预览、中文编码检测、自动保存——一个都不少。</p>
         <div class="cta">
-          <a class="btn btn-primary" href="https://github.com/zhangqixiang-sh/Mote/releases/latest/download/Mote-macOS.zip">↓&ensp;下载 Mote</a>
+          <div class="install">
+            <div class="install-row">
+              <code class="install-cmd"><span class="prompt" aria-hidden="true">$ </span>curl -fsSL https://zhangqixiang-sh.github.io/Mote/install.sh | bash</code>
+              <button class="copy-btn" id="copy-btn" type="button">复制</button>
+            </div>
+            <p class="install-hint">执行命令，一键安装</p>
+          </div>
           <a class="btn btn-ghost" href="https://github.com/zhangqixiang-sh/Mote" target="_blank" rel="noopener">在 GitHub 查看</a>
         </div>
-        <p class="req">macOS 14 Sonoma 或更高 · Apple Silicon &amp; Intel · 安装包 836KB</p>
-        <dl class="stats">
-          <div><dt>冷启动</dt><dd><span class="num">214</span><span class="unit">ms</span></dd></div>
-          <div><dt>常驻内存</dt><dd><span class="num">43</span><span class="unit">MB</span></dd></div>
-          <div><dt>安装包</dt><dd><span class="num">836</span><span class="unit">KB</span></dd></div>
-          <div><dt>支持语言</dt><dd><span class="num">24</span><span class="unit">种</span></dd></div>
-        </dl>
+        <p class="req">macOS 14 Sonoma 或更高 · Apple Silicon（M 系列）</p>
       </div>
 
       <div class="hero-visual" aria-hidden="true">
@@ -58,22 +58,7 @@
           </div>
           <div class="panes">
             <div class="code-pane">
-              <pre><code>
-<span class="line"><i>1</i><span class="kw">import</span> AppKit</span>
-<span class="line"><i>2</i><span class="kw">import</span> Sourceful</span>
-<span class="line"><i>3</i></span>
-<span class="line"><i>4</i><span class="cm">/// 冷启动 214ms 的底气：</span></span>
-<span class="line"><i>5</i><span class="cm">/// 启动零阻塞，高亮后置。</span></span>
-<span class="line"><i>6</i><span class="kw">final class</span> <span class="ty">MoteDocument</span>: <span class="ty">NSDocument</span> {</span>
-<span class="line"><i>7</i>    <span class="kw">var</span> text = <span class="st">"你好，Mote"</span></span>
-<span class="line"><i>8</i>    <span class="kw">var</span> encoding = <span class="ty">TextEncoding</span>.gbk</span>
-<span class="line"><i>9</i></span>
-<span class="line"><i>10</i>    <span class="kw">override func</span> <span class="fn">save</span>(to url: <span class="ty">URL</span>) {</span>
-<span class="line"><i>11</i>        <span class="kw">try</span> text.<span class="fn">write</span>(to: url,</span>
-<span class="line"><i>12</i>                encoding: encoding)</span>
-<span class="line"><i>13</i>    }</span>
-<span class="line"><i>14</i>}</span>
-              </code></pre>
+              <pre><code><span class="line"><i>1</i><span class="kw">import</span> AppKit</span><span class="line"><i>2</i><span class="kw">import</span> Sourceful</span><span class="line"><i>3</i></span><span class="line"><i>4</i><span class="cm">/// 冷启动快的底气：</span></span><span class="line"><i>5</i><span class="cm">/// 启动零阻塞，高亮后置。</span></span><span class="line"><i>6</i><span class="kw">class</span> <span class="ty">MoteDocument</span>: <span class="ty">NSDocument</span> {</span><span class="line"><i>7</i>  <span class="kw">var</span> text = <span class="st">"你好，Mote"</span></span><span class="line"><i>8</i>  <span class="kw">var</span> encoding = <span class="ty">TextEncoding</span>.gbk</span><span class="line"><i>9</i></span><span class="line"><i>10</i>  <span class="kw">override func</span> <span class="fn">save</span>(to url: <span class="ty">URL</span>) {</span><span class="line"><i>11</i>    <span class="kw">try</span> text.<span class="fn">write</span>(to: url,</span><span class="line"><i>12</i>        encoding: encoding)</span><span class="line"><i>13</i>  }</span><span class="line"><i>14</i>}</span></code></pre>
             </div>
             <div class="preview-pane">
               <p class="md-h">Hello, Mote</p>
@@ -87,8 +72,6 @@
             </div>
           </div>
         </figure>
-        <span class="chip badge badge-a">⚡ 冷启动 214 ms</span>
-        <span class="chip badge badge-b">GBK → 自动识别</span>
       </div>
     </section>
 
@@ -160,7 +143,7 @@
             <svg class="icon" viewBox="0 0 24 24"><path d="M12 3c3 3.5 4.5 6.5 4.5 9a4.5 4.5 0 0 1-9 0c0-2.5 1.5-5.5 4.5-9Z"/><path d="M6 21h12"/></svg>
             <h3>100% 原生，不是套壳</h3>
           </div>
-          <p>TextKit + NSDocument + SwiftUI 承载，没有一行 Electron。所以才敢说：冷启动 214ms、常驻 43MB、包体 836KB。</p>
+          <p>TextKit + NSDocument + SwiftUI 承载，没有一行 Electron。所以冷启动快、常驻小、包体轻——下方有实测数据。</p>
         </article>
         <article class="card wide">
           <div class="card-head">
@@ -228,5 +211,48 @@
     </nav>
     <p class="footer-note">© 2026 Mote</p>
   </footer>
+
+  <script>
+    // 一键复制安装命令（全站唯一的 JS）
+    (function () {
+      var CMD = "curl -fsSL https://zhangqixiang-sh.github.io/Mote/install.sh | bash";
+      var btn = document.getElementById("copy-btn");
+      if (!btn) return;
+      var LABEL = btn.textContent; // 复制后恢复按钮原文案
+      var timer = null;
+      btn.addEventListener("click", function () {
+        copyText(CMD).then(
+          function () { flash("已复制 ✓", true); },
+          function () { flash("复制失败，请手动选择", false); }
+        );
+      });
+      function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text);
+        }
+        // 降级：隐藏 textarea + execCommand
+        return new Promise(function (resolve, reject) {
+          var ta = document.createElement("textarea");
+          ta.value = text;
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand("copy") ? resolve() : reject(new Error("copy failed")); }
+          catch (e) { reject(e); }
+          finally { document.body.removeChild(ta); }
+        });
+      }
+      function flash(msg, ok) {
+        btn.textContent = msg;
+        btn.classList.toggle("copied", ok);
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+          btn.textContent = LABEL;
+          btn.classList.remove("copied");
+        }, 1800);
+      }
+    })();
+  </script>
 </body>
 </html>
