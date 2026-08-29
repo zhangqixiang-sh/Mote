@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9684f8"/>
+      <stop offset="1" stop-color="#3f3592"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-150%" y="-150%" width="400%" height="400%">
+      <feGaussianBlur stdDeviation="20" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 全幅直角底板，圆角交给系统裁切；背景已调浅 -->
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+
+  <!-- M：视觉包围盒 264,264 → 760,760（含笔画），中心精确落在 (512, 512) -->
+  <path d="M316 708 L316 316 L512 535 L708 316 L708 552"
+        fill="none" stroke="#ffffff" stroke-width="104"
+        stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- 末笔化作微尘 -->
+  <circle cx="716" cy="650" r="72" fill="url(#halo)"/>
+  <circle cx="716" cy="650" r="36" fill="#ffffff" filter="url(#glow)"/>
+  <circle cx="756" cy="704" r="14" fill="#ffffff" opacity="0.85"/>
+  <circle cx="700" cy="726" r="8.5" fill="#ffffff" opacity="0.55"/>
+  <circle cx="770" cy="654" r="6" fill="#ffffff" opacity="0.4"/>
+</svg>

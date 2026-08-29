@@ -1,0 +1,49 @@
+# 网页部署：push 到 main 后自动把 website/ 发布到 GitHub Pages
+#
+# 首次启用需要手动设置一次（网页上操作）：
+#   仓库 Settings → Pages → Build and deployment → Source 选择「GitHub Actions」
+# 之后每次 push 改动 website/ 的代码，本工作流会自动重新部署。
+# 线上地址：https://zhangqixiang-sh.github.io/Mote/
+
+name: Deploy Website
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "website/**"
+      - ".github/workflows/deploy-website.yml"
+  workflow_dispatch: # 允许在 Actions 页面手动触发
+
+# GitHub Pages 部署所需的权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只保留一次部署，新的 push 会取消尚未完成的旧部署
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: website
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

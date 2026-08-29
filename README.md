@@ -2,6 +2,13 @@
 
 极致的轻量 macOS 文本编辑器：打开速度优先、内存占用最低、纯原生体验，同时具备代码高亮与 Markdown / SVG 渲染预览。
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/editor-dark.png">
+    <img src="assets/screenshots/editor-light.png" alt="Mote：左侧 Markdown 语法高亮，右侧实时渲染预览，深浅色主题跟随系统">
+  </picture>
+</p>
+
 ## 特性
 
 - **代码语法高亮**：24 种语言（23 种语言 + 纯文本兜底），基于 Sourceful 词法分析引擎，覆盖 Swift / Python / JavaScript / TypeScript / Java / Go / Rust / C / C++ / Objective-C / C# / Ruby / PHP / Shell / SQL / JSON / YAML / TOML / Markdown / HTML / XML / CSS / OCaml 等
@@ -64,10 +71,20 @@ Mote/
 ├── Encoding/       # 编码自动检测（UTF-8/16/GBK/GB18030）
 └── Vendor/         # Sourceful 高亮引擎
 docs/PRD.md         # 产品需求文档
+website/            # 产品官网（纯静态，GitHub Pages 自动部署）
 scripts/            # set-default-handlers.swift（设置默认打开方式）
-assets/             # App 图标源（icon.svg）与备用 icns
+assets/             # App 图标源（icon.svg）、备用 icns 与 README 截图（screenshots/）
 project.yml         # XcodeGen 工程定义（唯一事实来源）
 ```
+
+## CI / 自动化
+
+| 工作流 | 触发条件 | 作用 |
+|--------|----------|------|
+| `.github/workflows/deploy-website.yml` | push 到 main 且改动 `website/` | 自动部署官网到 GitHub Pages |
+| `.github/workflows/release.yml` | push `v*` 标签 | 云端构建 Release 版 Mote.app，打包发布到 GitHub Releases（产物固定名 `Mote-macOS.zip`，官网下载按钮始终指向最新版） |
+
+> 网页部署首次启用需在仓库 Settings → Pages → Source 选择「GitHub Actions」。
 
 ## 构建
 

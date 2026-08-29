@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<!-- Mote 编辑器窗口复刻(用于生成 README 截图)
+     配色/字体/样式严格取自源码:
+     - 编辑区: Mote/Highlighting/MoteTheme.swift (Menlo 13, VS Code Light+/Dark+)
+     - 预览区: Mote/Preview/PreviewPanelView.swift 的 markdownStylesheet 原文
+     - 布局:   Mote/Editor/EditorView.swift (HSplitView + 标题栏预览开关)
+     用法: 用 headless Chrome 打开并截图
+       ?theme=dark  (默认)
+       ?theme=light
+     示例:
+       Chrome --headless=new --screenshot=editor-dark.png \
+         --window-size=1500,740 --force-device-scale-factor=2 \
+         --default-background-color=00000000 \
+         'file:///.../screenshot.html?theme=dark'
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.dataset.theme =
+  new URLSearchParams(location.search).get('theme') || 'dark';</script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: transparent; }
+  body { -webkit-font-smoothing: antialiased; }
+
+  /* ===== 主题变量(来自 MoteTheme.swift 与 PreviewPanelView.swift) ===== */
+  html[data-theme="dark"] {
+    --win-border: rgba(255,255,255,.16);
+    --titlebar-bg: #333336;
+    --titlebar-line: rgba(255,255,255,.10);
+    --title: #d8d8da;
+    --gutter-bg: #252526;          /* GutterStyle.backgroundColor */
+    --ln: #737373;                 /* lineNumbersStyle.textColor (0.45) */
+    --editor-bg: #1E1E1E;          /* backgroundColor */
+    --plain: #D4D4D4; --kw: #C586C0; --st: #CE9178;
+    --cm: #6A9955; --id: #9CDCFE;
+    --divider: rgba(255,255,255,.12);
+    --toolbar-btn-bg: rgba(255,255,255,.08);
+    /* 预览面板(dark 分支) */
+    --pv-text: #d4d4d4; --pv-bg: #1e1e1e;
+    --pv-hline: #3c3c3c; --pv-code-bg: rgba(255,255,255,.1);
+    --pv-pre-bg: rgba(255,255,255,.06);
+    --pv-quote: #8b949e; --pv-quote-line: #3c3c3c;
+    --pv-line: #3c3c3c; --pv-th-bg: rgba(255,255,255,.06);
+    --pv-a: #58a6ff;
+  }
+  html[data-theme="light"] {
+    --win-border: rgba(0,0,0,.28);
+    --titlebar-bg: #ECECEC;
+    --titlebar-line: rgba(0,0,0,.14);
+    --title: #262629;
+    --gutter-bg: #F5F5F5;          /* calibratedWhite 0.96 */
+    --ln: #6E6E6E;                 /* calibratedWhite 0.43 */
+    --editor-bg: #FFFFFF;
+    --plain: #171717; --kw: #AF00DB; --st: #A31515;
+    --cm: #008000; --id: #267F99;
+    --divider: rgba(0,0,0,.15);
+    --toolbar-btn-bg: rgba(0,0,0,.06);
+    /* 预览面板(light 分支) */
+    --pv-text: #171717; --pv-bg: #ffffff;
+    --pv-hline: #e1e4e8; --pv-code-bg: rgba(27,31,35,.06);
+    --pv-pre-bg: rgba(27,31,35,.05);
+    --pv-quote: #6a737d; --pv-quote-line: #dfe2e5;
+    --pv-line: #dfe2e5; --pv-th-bg: rgba(27,31,35,.04);
+    --pv-a: #0366d6;
+  }
+
+  .window {
+    width: 1498px; height: 738px;
+    border: 1px solid var(--win-border);
+    border-radius: 10px; overflow: hidden;
+    background: var(--editor-bg);
+    display: flex; flex-direction: column;
+  }
+
+  /* ===== 标题栏 + 工具栏 ===== */
+  .titlebar {
+    position: relative; flex: none;
+    height: 52px; display: flex; align-items: center;
+    padding: 0 14px;
+    background: var(--titlebar-bg);
+    border-bottom: 1px solid var(--titlebar-line);
+  }
+  .lights { display: flex; gap: 8px; }
+  .light { width: 12px; height: 12px; border-radius: 50%; }
+  .light.r { background: #FF5F57; } .light.y { background: #FEBC2E; } .light.g { background: #28C840; }
+  .title {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 7px;
+    font: 600 13px -apple-system, "PingFang SC", sans-serif;
+    color: var(--title);
+  }
+  .title img { width: 16px; height: 16px; border-radius: 4px; }
+  .toolbar { margin-left: auto; display: flex; gap: 8px; }
+  .tb-btn {
+    width: 30px; height: 24px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--toolbar-btn-bg);
+  }
+  .tb-btn svg { width: 16px; height: 16px; }
+
+  /* ===== 编辑区(Sourceful SyntaxTextView) ===== */
+  .body { flex: 1; display: flex; min-height: 0; }
+  .editor { flex: 1.42; display: flex; background: var(--editor-bg); font-family: Menlo, monospace; }
+  .gutter {
+    flex: none; width: 44px;               /* GutterStyle.minimumWidth */
+    background: var(--gutter-bg);
+    padding: 12px 0 14px;
+    text-align: right;
+  }
+  .gutter span {
+    display: block; padding-right: 11px;
+    font-size: 11px; line-height: 19.5px;   /* lineNumbersStyle: Menlo 11 */
+    color: var(--ln);
+  }
+  .code { padding: 12px 16px 14px; font-size: 13px; line-height: 19.5px; white-space: pre; color: var(--plain); }
+  .kw { color: var(--kw); } .st { color: var(--st); }
+  .cm { color: var(--cm); } .id { color: var(--id); }
+
+  .split-divider { flex: none; width: 1px; background: var(--divider); }
+
+  /* ===== 预览面板(PreviewPanelView.markdownStylesheet 原文,仅换色值改为变量) ===== */
+  .preview {
+    flex: 1; min-width: 320px;
+    font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+    font-size: 14px; line-height: 1.65;
+    padding: 12px 20px 32px;
+    word-wrap: break-word;
+    color: var(--pv-text); background: var(--pv-bg);
+    overflow: hidden;
+  }
+  .preview h1, .preview h2 { border-bottom: 1px solid var(--pv-hline); padding-bottom: 0.25em; }
+  .preview h1 { font-size: 1.7em; }
+  .preview h2 { font-size: 1.4em; }
+  .preview h3 { font-size: 1.2em; }
+  .preview code {
+    font-family: Menlo, monospace; font-size: 0.92em;
+    background: var(--pv-code-bg); border-radius: 4px; padding: 0.15em 0.35em;
+  }
+  .preview pre {
+    background: var(--pv-pre-bg); border-radius: 6px; padding: 12px 14px; overflow-x: auto;
+  }
+  .preview pre code { background: none; padding: 0; }
+  .preview blockquote { margin: 0; padding: 0 1em; color: var(--pv-quote); border-left: 3px solid var(--pv-quote-line); }
+  .preview table { border-collapse: collapse; margin: 0.8em 0; }
+  .preview th, .preview td { border: 1px solid var(--pv-line); padding: 6px 13px; }
+  .preview th { background: var(--pv-th-bg); }
+  .preview a { color: var(--pv-a); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="window">
+
+  <div class="titlebar">
+    <div class="lights"><span class="light r"></span><span class="light y"></span><span class="light g"></span></div>
+    <div class="title"><img src="../icon.svg" alt="">MoteGuide.md</div>
+    <div class="toolbar">
+      <!-- EditorView 工具栏的预览开关:sidebar.right,开启态为主题强调色 -->
+      <div class="tb-btn">
+        <svg viewBox="0 0 16 16"><rect x="1.5" y="2.5" width="13" height="11" rx="2" fill="none" stroke="#0A84FF" stroke-width="1.4"/><rect x="10" y="2.5" width="4.5" height="11" rx="1.5" fill="#0A84FF"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="editor">
+      <div class="gutter"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span>29</span><span>30</span><span>31</span><span>32</span></div>
+      <div class="code"><span class="kw"># Mote 使用指南</span>
+
+极致轻量的 <span class="kw">**macOS**</span> 原生文本编辑器:
+快,是打开速度优先的那种快。
+
+<span class="kw">## 核心特性</span>
+
+<span class="kw">- </span>冷启动 <span class="kw">**214ms**</span>,常驻 <span class="kw">**43MB**</span>
+<span class="kw">- </span>安装包只有 <span class="id">*836KB*</span>
+<span class="kw">- </span><span class="st">`⌘S`</span> 已经不需要了
+<span class="kw">- </span>深浅色主题跟随系统
+
+<span class="cm">&gt; 打开,即编辑。</span>
+
+<span class="kw">## 编码自动检测</span>
+
+UTF-8 / UTF-16 / GBK / GB18030,
+保存时按原编码写回,不乱码。
+
+| 编码 | 支持 |
+| --- | --- |
+| UTF-8 | ✓ |
+| GB18030 | ✓ |
+
+<span class="st">```swift
+final class MoteDocument: NSDocument {
+    override func save(to url: URL) throws {
+        try text.write(to: url,
+                encoding: encoding)
+    }
+}
+```</span>
+
+详见 <span class="id">[GitHub 仓库](https://github.com/)</span>。</div>
+    </div>
+
+    <div class="split-divider"></div>
+
+    <div class="preview">
+      <h1>Mote 使用指南</h1>
+      <p>极致轻量的 <strong>macOS</strong> 原生文本编辑器:<br>快,是打开速度优先的那种快。</p>
+      <h2>核心特性</h2>
+      <ul>
+        <li>冷启动 <strong>214ms</strong>,常驻 <strong>43MB</strong></li>
+        <li>安装包只有 <em>836KB</em></li>
+        <li><code>⌘S</code> 已经不需要了</li>
+        <li>深浅色主题跟随系统</li>
+      </ul>
+      <blockquote><p>打开,即编辑。</p></blockquote>
+      <h2>编码自动检测</h2>
+      <p>UTF-8 / UTF-16 / GBK / GB18030,<br>保存时按原编码写回,不乱码。</p>
+      <table>
+        <thead><tr><th>编码</th><th>支持</th></tr></thead>
+        <tbody>
+          <tr><td>UTF-8</td><td>✓</td></tr>
+          <tr><td>GB18030</td><td>✓</td></tr>
+        </tbody>
+      </table>
+      <pre><code>final class MoteDocument: NSDocument {
+    override func save(to url: URL) throws {
+        try text.write(to: url,
+                encoding: encoding)
+    }
+}</code></pre>
+      <p>详见 <a href="#">GitHub 仓库</a>。</p>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

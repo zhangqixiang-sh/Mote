@@ -1,0 +1,55 @@
+# 发版：推一个 v* 标签后，云端自动构建 Mote.app 并发布到 GitHub Releases
+#
+#   git tag v0.1.0
+#   git push origin v0.1.0
+#
+# 构建产物固定命名为 Mote-macOS.zip，官网下载按钮指向
+# releases/latest/download/Mote-macOS.zip，因此永远下载到最新版本。
+
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write # 创建 Release 需要写权限
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # project.yml 是唯一事实来源，CI 里重新生成工程，保证与源码一致
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build (Release)
+        run: |
+          xcodebuild \
+            -project Mote.xcodeproj \
+            -scheme Mote \
+            -configuration Release \
+            -derivedDataPath build \
+            build
+
+      # ditto 保留 macOS 元数据与符号链接，直接 zip 会损坏 .app 的权限信息
+      - name: Package
+        run: |
+          cd build/Build/Products/Release
+          ditto -c -k --sequesterRsrc --keepParent Mote.app Mote-macOS.zip
+
+      - name: Upload to GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ASSET="build/Build/Products/Release/Mote-macOS.zip"
+          gh release create "$GITHUB_REF_NAME" "$ASSET" \
+            --title "Mote $GITHUB_REF_NAME" \
+            --generate-notes \
+            || gh release upload "$GITHUB_REF_NAME" "$ASSET" --clobber

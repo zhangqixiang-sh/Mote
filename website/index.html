@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mote — 极致轻量的 macOS 文本编辑器</title>
+  <meta name="description" content="免费开源的 macOS 原生文本编辑器：冷启动 214ms、常驻内存 43MB、安装包 836KB。24 种语言语法高亮、Markdown / SVG 实时预览、中文编码自动检测、自动保存。">
+  <meta property="og:title" content="Mote — 极致轻量的 macOS 文本编辑器">
+  <meta property="og:description" content="打开即编辑，轻若无物。冷启动 214ms 的 100% 原生 macOS 编辑器，免费开源（MIT）。">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#0c0a13" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#faf8f4" media="(prefers-color-scheme: light)">
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="#top">
+      <img src="assets/icon.svg" alt="" width="22" height="22">
+      <span>Mote</span>
+    </a>
+    <nav class="nav-links" aria-label="页面导航">
+      <a href="#features">特性</a>
+      <a href="#languages">语言</a>
+      <a href="#performance">性能</a>
+      <a class="gh" href="https://github.com/zhangqixiang-sh/Mote" target="_blank" rel="noopener">GitHub ↗</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- ============ Hero ============ -->
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="pulse" aria-hidden="true"></span>开源免费 · MIT · 100% 原生 AppKit</p>
+        <h1>打开即编辑，<br>轻若无物。</h1>
+        <p class="serif-line" aria-hidden="true">Instantly. Effortlessly. Natively.</p>
+        <p class="lede">Mote 是一款免费开源的 macOS 原生文本编辑器：100% TextKit 渲染，冷启动只要 214 毫秒，常驻内存 43MB，安装包不足 1MB。语法高亮、Markdown / SVG 预览、中文编码检测、自动保存——一个都不少。</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="https://github.com/zhangqixiang-sh/Mote/releases/latest/download/Mote-macOS.zip">↓&ensp;下载 Mote</a>
+          <a class="btn btn-ghost" href="https://github.com/zhangqixiang-sh/Mote" target="_blank" rel="noopener">在 GitHub 查看</a>
+        </div>
+        <p class="req">macOS 14 Sonoma 或更高 · Apple Silicon &amp; Intel · 安装包 836KB</p>
+        <dl class="stats">
+          <div><dt>冷启动</dt><dd><span class="num">214</span><span class="unit">ms</span></dd></div>
+          <div><dt>常驻内存</dt><dd><span class="num">43</span><span class="unit">MB</span></dd></div>
+          <div><dt>安装包</dt><dd><span class="num">836</span><span class="unit">KB</span></dd></div>
+          <div><dt>支持语言</dt><dd><span class="num">24</span><span class="unit">种</span></dd></div>
+        </dl>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="glow"></div>
+        <figure class="window">
+          <div class="titlebar">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span class="path">~/Documents/HelloMote.swift</span>
+            <span class="chip">自动保存 ✓</span>
+          </div>
+          <div class="panes">
+            <div class="code-pane">
+              <pre><code>
+<span class="line"><i>1</i><span class="kw">import</span> AppKit</span>
+<span class="line"><i>2</i><span class="kw">import</span> Sourceful</span>
+<span class="line"><i>3</i></span>
+<span class="line"><i>4</i><span class="cm">/// 冷启动 214ms 的底气：</span></span>
+<span class="line"><i>5</i><span class="cm">/// 启动零阻塞，高亮后置。</span></span>
+<span class="line"><i>6</i><span class="kw">final class</span> <span class="ty">MoteDocument</span>: <span class="ty">NSDocument</span> {</span>
+<span class="line"><i>7</i>    <span class="kw">var</span> text = <span class="st">"你好，Mote"</span></span>
+<span class="line"><i>8</i>    <span class="kw">var</span> encoding = <span class="ty">TextEncoding</span>.gbk</span>
+<span class="line"><i>9</i></span>
+<span class="line"><i>10</i>    <span class="kw">override func</span> <span class="fn">save</span>(to url: <span class="ty">URL</span>) {</span>
+<span class="line"><i>11</i>        <span class="kw">try</span> text.<span class="fn">write</span>(to: url,</span>
+<span class="line"><i>12</i>                encoding: encoding)</span>
+<span class="line"><i>13</i>    }</span>
+<span class="line"><i>14</i>}</span>
+              </code></pre>
+            </div>
+            <div class="preview-pane">
+              <p class="md-h">Hello, Mote</p>
+              <p class="md-p">一款<strong>极致轻量</strong>的 macOS 编辑器。</p>
+              <ul class="md-ul">
+                <li>24 种语言高亮</li>
+                <li>GBK 自动检测</li>
+                <li>编辑即保存</li>
+              </ul>
+              <p class="md-quote">打开，即编辑。</p>
+            </div>
+          </div>
+        </figure>
+        <span class="chip badge badge-a">⚡ 冷启动 214 ms</span>
+        <span class="chip badge badge-b">GBK → 自动识别</span>
+      </div>
+    </section>
+
+    <!-- ============ Languages marquee ============ -->
+    <section class="marquee" id="languages">
+      <p class="marquee-label">内置 24 种语言的词法高亮</p>
+      <div class="marquee-track">
+        <ul>
+          <li>Swift</li><li>Python</li><li>JavaScript</li><li>TypeScript</li><li>Java</li><li>Go</li><li>Rust</li><li>C</li><li>C++</li><li>Objective-C</li><li>C#</li><li>Ruby</li><li>PHP</li><li>Shell</li><li>SQL</li><li>JSON</li><li>YAML</li><li>TOML</li><li>Markdown</li><li>HTML</li><li>XML</li><li>CSS</li><li>OCaml</li><li>Plain Text</li>
+        </ul>
+        <ul aria-hidden="true">
+          <li>Swift</li><li>Python</li><li>JavaScript</li><li>TypeScript</li><li>Java</li><li>Go</li><li>Rust</li><li>C</li><li>C++</li><li>Objective-C</li><li>C#</li><li>Ruby</li><li>PHP</li><li>Shell</li><li>SQL</li><li>JSON</li><li>YAML</li><li>TOML</li><li>Markdown</li><li>HTML</li><li>XML</li><li>CSS</li><li>OCaml</li><li>Plain Text</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ Features ============ -->
+    <section class="features" id="features">
+      <header class="section-head">
+        <p class="eyebrow">FEATURES</p>
+        <h2>把该有的都有，<br>把不该有的都删了。</h2>
+      </header>
+      <div class="feature-grid">
+        <article class="card span2">
+          <div class="card-head">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M8 6 3 12l5 6M16 6l5 6-5 6M13.5 4l-3 16"/></svg>
+            <h3>语法高亮 · 24 种语言</h3>
+          </div>
+          <p>Sourceful 词法分析引擎，不是正则涂色。VS Code Light+ / Dark+ 两套配色，随系统深浅色自动切换。</p>
+          <p class="tags"><b>Swift</b><b>Rust</b><b>Python</b><b>TypeScript</b><b>Go</b><b>+ 19 种</b></p>
+        </article>
+        <article class="card">
+          <div class="card-head">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M6.5 9h2.5M6.5 12.5H9"/></svg>
+            <h3>Markdown 实时预览</h3>
+          </div>
+          <p>右侧分栏，边写边渲染，250ms 防抖。标题、表格、代码块、图片、链接通通支持。</p>
+        </article>
+        <article class="card">
+          <div class="card-head">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M4 5h16M4 12h9M4 19h13"/><circle cx="18.5" cy="16.5" r="3.5"/><path d="m17.5 15.5 2 2-2 2"/></svg>
+            <h3>中文编码自动检测</h3>
+          </div>
+          <p>UTF-8 / UTF-16 / GBK / GB18030 逐层嗅探，保存时按原编码写回。打开老文件，不乱码。</p>
+        </article>
+        <article class="card">
+          <div class="card-head">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 3v10m0 0 4-4m-4 4-4-4"/><path d="M4 15v3a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-3"/></svg>
+            <h3>自动保存</h3>
+          </div>
+          <p>编辑即写回原文件，掉电也不丢一个字。⌘S 可以退休了。</p>
+        </article>
+        <article class="card">
+          <div class="card-head">
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+            <h3>SVG / HTML 预览</h3>
+          </div>
+          <p>只读 WebView 原样渲染，禁用 JavaScript——省内存，也更安全。</p>
+        </article>
+        <article class="card">
+          <div class="card-head">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m7 9.5 2.5 2.5L7 14.5M12 15h5"/></svg>
+            <h3>默认打开方式</h3>
+          </div>
+          <p>声明 60+ 种文本与代码类型，一条命令接管整个系统的默认打开方式。</p>
+        </article>
+        <article class="card span2">
+          <div class="card-head">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 3c3 3.5 4.5 6.5 4.5 9a4.5 4.5 0 0 1-9 0c0-2.5 1.5-5.5 4.5-9Z"/><path d="M6 21h12"/></svg>
+            <h3>100% 原生，不是套壳</h3>
+          </div>
+          <p>TextKit + NSDocument + SwiftUI 承载，没有一行 Electron。所以才敢说：冷启动 214ms、常驻 43MB、包体 836KB。</p>
+        </article>
+        <article class="card wide">
+          <div class="card-head">
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18M3.5 9h17M3.5 15h17"/></svg>
+            <h3>深浅色主题，跟随系统</h3>
+          </div>
+          <p>白天 VS Code Light+，夜里 VS Code Dark+，Mote 随系统外观自动切换——包括这个网页。</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ Performance ============ -->
+    <section class="perf" id="performance">
+      <div class="perf-intro">
+        <p class="eyebrow">BENCHMARKS</p>
+        <h2>性能不是口号，<br>是实测基准。</h2>
+        <p class="lede">每一项指标都实测达标。工程手段只有两条：启动零阻塞，预览懒加载。</p>
+      </div>
+      <div class="perf-rows">
+        <div class="perf-row">
+          <div class="perf-meta">
+            <p class="perf-name">冷启动到窗口可见</p>
+            <p class="perf-target">目标 &lt; 300ms</p>
+          </div>
+          <p class="perf-value"><span class="num">214</span><span class="unit">ms</span><span class="ok">✓ 达标</span></p>
+          <div class="bar"><i style="width:71%"></i></div>
+        </div>
+        <div class="perf-row">
+          <div class="perf-meta">
+            <p class="perf-name">双击文件打开到可编辑</p>
+            <p class="perf-target">目标 &lt; 500ms</p>
+          </div>
+          <p class="perf-value"><span class="num">359</span><span class="unit">ms</span><span class="ok">✓ 达标</span></p>
+          <div class="bar"><i style="width:72%"></i></div>
+        </div>
+        <div class="perf-row">
+          <div class="perf-meta">
+            <p class="perf-name">常驻内存（单窗口）</p>
+            <p class="perf-target">目标 &lt; 80MB</p>
+          </div>
+          <p class="perf-value"><span class="num">43</span><span class="unit">MB</span><span class="ok">✓ 达标</span></p>
+          <div class="bar"><i style="width:54%"></i></div>
+        </div>
+        <div class="perf-row">
+          <div class="perf-meta">
+            <p class="perf-name">安装包体积</p>
+            <p class="perf-target">目标 &lt; 10MB</p>
+          </div>
+          <p class="perf-value"><span class="num">836</span><span class="unit">KB</span><span class="ok">✓ 达标</span></p>
+          <div class="bar"><i style="width:8%"></i></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-brand">
+      <img src="assets/icon.svg" alt="" width="20" height="20">
+      <p><b>Mote</b> — 极致轻量的 macOS 文本编辑器</p>
+    </div>
+    <nav class="footer-links" aria-label="页脚链接">
+      <a href="https://github.com/zhangqixiang-sh/Mote" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/zhangqixiang-sh/Mote/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+    </nav>
+    <p class="footer-note">© 2026 Mote</p>
+  </footer>
+</body>
+</html>
