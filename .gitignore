@@ -6,11 +6,29 @@ DerivedData/
 build/
 xcuserdata/
 *.xcuserstate
+*.xcresult
+*.ipa
+*.dSYM/
 
 # SwiftPM
 .swiftpm/
+.build/
+
+# 编辑器与 IDE
+.idea/
+.vscode/
+*.local.*
+
+# 环境变量与敏感信息
+.env
+.env.*
+
+# Node（图标渲染脚本用）
+node_modules/
 
 # 本地AI工作数据
+.qoder/
+.claude/
 .workbuddy/
 .trae/
 
