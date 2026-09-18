@@ -26,9 +26,67 @@ class InnerTextView: TextView {
 	var theme: SyntaxColorTheme?
 	
 	var cachedParagraphs: [Paragraph]?
-	
+
+	/// 行起始偏移(UTF-16)缓存:原先每次绘制 gutter 都对全文做
+	/// `components(separatedBy: .newlines)`,大文档下等于每次滚动
+	/// 都做一次 O(n) 字符串拷贝/切分;改为随文本变更只扫描一次换行符。
+	/// 同时用于按可见区域绘制行号时的行号二分查找。
+	private var cachedLineStartOffsets: [Int]?
+
+	/// 当前文本的行数(惰性计算并缓存,文本变更时失效)
+	var lineCount: Int {
+		lineStartOffsets.count
+	}
+
+	/// 每行行首 UTF-16 偏移;首个偏移恒为 0,每个换行符后再记录一个偏移。
+	/// CRLF 视为一个换行;行数语义与原 `components(separatedBy:.newlines).count` 一致。
+	var lineStartOffsets: [Int] {
+		if let cached = cachedLineStartOffsets {
+			return cached
+		}
+		let nsText = text as NSString
+		var starts = [0]
+		var search = NSRange(location: 0, length: nsText.length)
+		while search.length > 0 {
+			let found = nsText.rangeOfCharacter(from: .newlines, range: search)
+			guard found.location != NSNotFound else { break }
+			var next = found.location + found.length
+			// CRLF 合并为一个换行,避免在 \r 与 \n 之间生成一个空行行首
+			if found.length == 1,
+			   nsText.character(at: found.location) == 13, // CR
+			   found.location + 1 < nsText.length,
+			   nsText.character(at: found.location + 1) == 10 { // LF
+				next = found.location + 2
+			}
+			starts.append(next)
+			search.location = next
+			search.length = nsText.length - next
+		}
+		cachedLineStartOffsets = starts
+		return starts
+	}
+
+	/// 某个 UTF-16 字符偏移所在的 1-based 行号(二分查找行首偏移)
+	func lineNumber(forCharacterOffset offset: Int) -> Int {
+		let starts = lineStartOffsets
+		var low = 0
+		var high = starts.count - 1
+		var answer = 0
+		while low <= high {
+			let mid = (low + high) / 2
+			if starts[mid] <= offset {
+				answer = mid
+				low = mid + 1
+			} else {
+				high = mid - 1
+			}
+		}
+		return answer + 1
+	}
+
 	func invalidateCachedParagraphs() {
 		cachedParagraphs = nil
+		cachedLineStartOffsets = nil
 	}
 	
 	func hideGutter() {
@@ -86,10 +144,8 @@ class InnerTextView: TextView {
 			
 		} else {
 			
-			let components = textView.text.components(separatedBy: .newlines)
-			
-			let count = components.count
-			
+			let count = textView.lineCount
+
 			let maxNumberOfDigits = "\(count)".count
 			
 			textView.updateGutterWidth(for: maxNumberOfDigits)

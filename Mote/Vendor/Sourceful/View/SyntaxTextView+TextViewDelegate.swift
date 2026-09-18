@@ -46,33 +46,43 @@ extension SyntaxTextView {
 	}
 	
 	func selectionDidChange() {
-		
-		guard let delegate = delegate else {
+
+		guard delegate != nil else {
 			return
 		}
-		
-		if let cachedTokens = cachedTokens {
-			
+
+		// 选区变化只可能影响占位符的激活状态;完整重高亮由
+		// scheduleHighlight 负责,不再在此同步全量重扫
+		if hasEditorPlaceholders, let cachedTokens = cachedTokens {
+
 			#if os(iOS)
-				if !textView.isCursorFloating {
-					updateEditorPlaceholders(cachedTokens: cachedTokens)
-				}
-			#else
+			if !textView.isCursorFloating {
 				updateEditorPlaceholders(cachedTokens: cachedTokens)
+			}
+			#else
+			updateEditorPlaceholders(cachedTokens: cachedTokens)
 			#endif
-			
+
+			let textStorage: NSTextStorage
+			#if os(macOS)
+			textStorage = textView.textStorage!
+			#else
+			textStorage = textView.textStorage
+			#endif
+			updateAttributes(textStorage: textStorage, cachedTokens: cachedTokens, source: textView.text ?? "")
 		}
-		
-		colorTextView(lexerForSource: { (source) -> Lexer in
-			return delegate.lexerForSource(source)
-		})
-		
+
 		previousSelectedRange = textView.selectedRange
-		
+
 	}
-	
+
 	func updateEditorPlaceholders(cachedTokens: [CachedToken]) {
-		
+
+		// 无占位符的语言跳过全量 token 扫描
+		guard hasEditorPlaceholders else {
+			return
+		}
+
 		for cachedToken in cachedTokens {
 			
 			let range = cachedToken.nsRange
@@ -167,13 +177,9 @@ extension SyntaxTextView {
         func refreshColors() {
             self.invalidateCachedTokens()
             self.textView.invalidateCachedParagraphs()
-            
-            if let delegate = delegate {
-                colorTextView(lexerForSource: { (source) -> Lexer in
-                    return delegate.lexerForSource(source)
-                })
-            }
-            
+
+            scheduleHighlight()
+
             wrapperView.setNeedsDisplay(wrapperView.bounds)
         }
 		
@@ -208,17 +214,13 @@ extension SyntaxTextView {
 		}
 		
 		func refreshColors() {
-			
+
 			self.invalidateCachedTokens()
 			self.textView.invalidateCachedParagraphs()
 			textView.setNeedsDisplay()
-			
-			if let delegate = delegate {
-				colorTextView(lexerForSource: { (source) -> Lexer in
-					return delegate.lexerForSource(source)
-				})
-			}
-			
+
+			scheduleHighlight()
+
 		}
 	
 		open func textViewDidChangeSelection(_ textView: UITextView) {
@@ -282,14 +284,14 @@ extension SyntaxTextView {
 		textStorage = textView.textStorage
 		#endif
 		
-		guard let cachedTokens = cachedTokens else {
-			return true
-		}
-			
+		// 只有含占位符的语言才需要逐 token 检查插入位置;其余语言
+		// (含全部 Mote 自定义语言)跳过这次 O(n) 扫描
+		if hasEditorPlaceholders, let cachedTokens = cachedTokens {
+
 		for token in cachedTokens {
-			
+
 			let range = token.nsRange
-			
+
 			if token.token.isEditorPlaceholder {
 				
 				// Allow editorPlaceholder to be completely deleted.
@@ -352,9 +354,11 @@ extension SyntaxTextView {
 				}
 				
 			}
-			
+
 		}
-		
+
+		} // end if hasEditorPlaceholders
+
 		if origInsertingText == "\n" {
 
 			textStorage.replaceCharacters(in: selectedRange, with: insertingText)

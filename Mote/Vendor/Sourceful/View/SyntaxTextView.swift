@@ -55,6 +55,10 @@ open class SyntaxTextView: _View {
 
     let textView: InnerTextView
 
+    /// 编辑区滚动回调(预览联动用):contentView 的 boundsDidChange 通知
+    /// 每次滚动触发,与 gutter 重绘共用同一事件源
+    var onDidScroll: (() -> Void)?
+
     public var contentTextView: TextView {
         return textView
     }
@@ -262,6 +266,7 @@ open class SyntaxTextView: _View {
 
         wrapperView.setNeedsDisplay(wrapperView.bounds)
 
+        onDidScroll?()
     }
 
     #endif
@@ -373,56 +378,116 @@ open class SyntaxTextView: _View {
 
     var cachedTokens: [CachedToken]?
 
+    /// 当前缓存的 token 中是否含编辑器占位符(`<#...#>`,仅内置
+    /// Swift / JS / Python / Java lexer 会产生;Mote 自定义的
+    /// GenericCodeLexer 系语言不产生)。为 false 时,每次按键 /
+    /// 选区变化对全量 token 的 O(n) 扫描与整段属性枚举全部跳过。
+    private(set) var hasEditorPlaceholders = false
+
+    /// 高亮调度代数:每次调度 +1;旧代数的后台词法结果回主线程时
+    /// 若代数已变(期间又有新输入)则作废,杜绝过期 token 被应用。
+    private var highlightGeneration: UInt = 0
+
+    /// 同步高亮上限:低于它(小文档)保持"每次编辑立即同步高亮",
+    /// 输入反馈零延迟;高于它(大文档)改为"防抖 + 后台词法分析",
+    /// 避免粘贴/编辑大段文本时每敲一个键都在主线程全量重扫
+    /// (实测 1.6MB 中文 md 一次全量高亮 ≈ 2s:逐 token 上属性
+    /// 0.5s + 强制全文排版 1.3s)。
+    private static let synchronousHighlightCharacterLimit = 32 * 1024
+
+    /// 大文档高亮防抖间隔:输入停止这么久后才真正词法分析
+    private static let highlightDebounceInterval: TimeInterval = 0.3
+
     func invalidateCachedTokens() {
         cachedTokens = nil
+        hasEditorPlaceholders = false
     }
 
-    func colorTextView(lexerForSource: (String) -> Lexer) {
-        guard let source = textView.text else {
+    /// 调度一次完整高亮刷新(词法分析 + 上属性)。
+    ///
+    /// - 小文档(≤ 同步高亮上限):主线程同步执行,行为与原先一致;
+    /// - 大文档:防抖 0.3s 后把词法分析派到后台队列(正则匹配是
+    ///   CPU 密集且与 UI 无关),完成后回主线程核对"代数未变且文本
+    ///   未被继续修改"再应用属性,期间输入/滚动完全不被阻塞。
+    func scheduleHighlight() {
+        guard delegate != nil else {
+            return
+        }
+
+        highlightGeneration &+= 1
+        let generation = highlightGeneration
+        let source = textView.text ?? ""
+        guard !source.isEmpty else {
+            return
+        }
+
+        if source.utf16.count <= Self.synchronousHighlightCharacterLimit {
+            applyHighlight(source: source)
+            return
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.highlightDebounceInterval) { [weak self] in
+            guard let self = self, self.highlightGeneration == generation,
+                  let delegate = self.delegate else {
+                return
+            }
+            // lexer 获取很便宜(返回文档缓存的 lexer),留在主线程;
+            // 真正贵的全文档正则匹配放到后台
+            let lexer = delegate.lexerForSource(source)
+            DispatchQueue.global(qos: .userInitiated).async {
+                let tokens = lexer.getSavannaTokens(input: source)
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self,
+                          self.highlightGeneration == generation,
+                          self.textView.text == source else {
+                        return
+                    }
+                    self.applyTokens(tokens, source: source)
+                }
+            }
+        }
+    }
+
+    /// 同步路径:词法分析 + 缓存 token + 上属性(主线程)
+    private func applyHighlight(source: String) {
+        let lexer = delegate!.lexerForSource(source)
+        let tokens = lexer.getSavannaTokens(input: source)
+        applyTokens(tokens, source: source)
+    }
+
+    /// 将一次词法结果应用到文本存储(主线程;词法本身可能在后台)
+    private func applyTokens(_ tokens: [Token], source: String) {
+        guard let theme = self.theme, let themeInfo = self.themeInfo else {
             return
         }
 
         let textStorage: NSTextStorage
-
         #if os(macOS)
         textStorage = textView.textStorage!
         #else
         textStorage = textView.textStorage
         #endif
 
-        //		self.backgroundColor = theme.backgroundColor
+        textView.font = theme.font
 
-        let tokens: [Token]
-
-        if let cachedTokens = cachedTokens {
-            updateAttributes(textStorage: textStorage, cachedTokens: cachedTokens, source: source)
-        } else {
-            guard let theme = self.theme else {
-                return
-            }
-
-            guard let themeInfo = self.themeInfo else {
-                return
-            }
-
-            textView.font = theme.font
-
-            let lexer = lexerForSource(source)
-            tokens = lexer.getSavannaTokens(input: source)
-
-            let cachedTokens: [CachedToken] = tokens.map {
-
-                let nsRange = source.nsRange(fromRange: $0.range)
-                return CachedToken(token: $0, nsRange: nsRange)
-            }
-
-            self.cachedTokens = cachedTokens
-
-            createAttributes(theme: theme, themeInfo: themeInfo, textStorage: textStorage, cachedTokens: cachedTokens, source: source)
+        let cachedTokens: [CachedToken] = tokens.map {
+            let nsRange = source.nsRange(fromRange: $0.range)
+            return CachedToken(token: $0, nsRange: nsRange)
         }
+
+        self.cachedTokens = cachedTokens
+        self.hasEditorPlaceholders = cachedTokens.contains { $0.token.isEditorPlaceholder }
+
+        createAttributes(theme: theme, themeInfo: themeInfo, textStorage: textStorage, cachedTokens: cachedTokens, source: source)
     }
 
     func updateAttributes(textStorage: NSTextStorage, cachedTokens: [CachedToken], source: String) {
+
+        // 无占位符的语言(含全部 Mote 自定义语言)无需在每次选区变化时
+        // 枚举全文属性运行,直接跳过(O(n) → O(1))
+        guard hasEditorPlaceholders else {
+            return
+        }
 
         let selectedRange = textView.selectedRange
 

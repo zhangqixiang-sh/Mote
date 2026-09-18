@@ -21,6 +21,17 @@ struct EditorView: View {
     /// 供预览渲染的文本快照:由编辑回调驱动,防抖逻辑在预览视图内部
     @State private var previewContent: String
 
+    /// 大文档预览状态刷新节流:超过阈值后不每键复制多 MB 字符串去刷新
+    /// SwiftUI 状态,最多 1s 一次;阈值与 PreviewPanelView 的实时渲染
+    /// 上限一致(超过即自动暂停全文预览,只显示说明页)
+    @State private var lastLargePreviewStateUpdate = Date.distantPast
+    private static let largePreviewStateUpdateLimit = PreviewPanelView.liveMarkdownRenderLimit
+    private static let largePreviewStateUpdateInterval: TimeInterval = 1.0
+
+    /// 编辑区 ↔ 预览滚动联动控制器:引用类型,由编辑器与预览两个
+    /// Representable 共享(SwiftUI 重建 struct 不影响同一实例)
+    @State private var previewSync = PreviewScrollSync()
+
     init(document: MoteDocument) {
         self.document = document
         _previewContent = State(initialValue: document.text)
@@ -30,14 +41,28 @@ struct EditorView: View {
         let editor = SyntaxEditorRepresentable(
             document: document,
             themeStyle: colorScheme == .dark ? .dark : .light,
-            onTextChange: { previewContent = $0 }
+            sync: previewSync,
+            onTextChange: { newText in
+                guard showsPreview else { return }
+                let bytes = newText.utf8.count
+                if bytes > Self.largePreviewStateUpdateLimit {
+                    let now = Date()
+                    let currentIsLarge = previewContent.utf8.count > Self.largePreviewStateUpdateLimit
+                    if !currentIsLarge || now.timeIntervalSince(lastLargePreviewStateUpdate) >= Self.largePreviewStateUpdateInterval {
+                        previewContent = newText
+                        lastLargePreviewStateUpdate = now
+                    }
+                    return
+                }
+                previewContent = newText
+            }
         )
 
         Group {
             if document.isPreviewable, let kind = document.previewKind, showsPreview {
                 HSplitView {
                     editor.layoutPriority(1)
-                    PreviewPanelView(kind: kind, content: previewContent, fileURL: document.fileURL)
+                    PreviewPanelView(kind: kind, content: previewContent, fileURL: document.fileURL, sync: previewSync)
                         .frame(minWidth: 320)
                 }
             } else {
@@ -65,6 +90,8 @@ struct SyntaxEditorRepresentable: NSViewRepresentable {
 
     let document: MoteDocument
     let themeStyle: MoteThemeStyle
+    /// 滚动联动控制器(EditorView 创建,编辑/预览两侧共享)
+    let sync: PreviewScrollSync?
     /// 编辑内容变化回调(驱动预览刷新)
     var onTextChange: ((String) -> Void)?
 
@@ -74,12 +101,19 @@ struct SyntaxEditorRepresentable: NSViewRepresentable {
         view.delegate = context.coordinator
         view.theme = MoteThemeFactory.theme(for: themeStyle)
         context.coordinator.currentThemeStyle = themeStyle
+        // 滚动联动:编辑侧事件源(textView 的 contentView boundsDidChange)
+        sync?.textView = view.textView
+        view.onDidScroll = { [weak sync] in sync?.editorDidScroll() }
         return view
     }
 
     func updateNSView(_ view: SyntaxTextView, context: Context) {
         // 回调引用随 SwiftUI 重建更新,避免闭包捕获过期状态
         context.coordinator.onTextChange = onTextChange
+        // 滚动联动仅对"实时渲染中的 Markdown"启用:>256KB 暂停预览、
+        // SVG/HTML 原始渲染时没有可联动的正文预览
+        sync?.isEnabled = (document.previewKind == .markdown)
+            && (document.text.utf8.count <= PreviewPanelView.liveMarkdownRenderLimit)
         // 仅在系统外观切换时更换主题,避免每次 SwiftUI 刷新都重绘
         guard context.coordinator.currentThemeStyle != themeStyle else { return }
         context.coordinator.currentThemeStyle = themeStyle
